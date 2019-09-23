@@ -36,9 +36,6 @@
 !README.md
 !CONTRIBUTING.md
 
-# Keep documentation files for GitHub Sites
-!/**/*.yml
-
 #######################
 # For performance reasons, if a folder is already ignored, then
 # GitHub does not check the content for that folder for matches
@@ -55,10 +52,7 @@
 # Stata
 !/**/*.do
 !/**/*.ado
-
-# More
-!/**/*.sh
-!/**/*.bib
+!/**/*.dtasig
 
 # R
 !/**/*.R
@@ -67,9 +61,11 @@
 !/**/*.tex
 !/**/*.cls
 !/**/*.def
+!/**/*.bib
 
 # Python
 !/**/*.py
+!/**/*.ipynb
 
 # Matlab
 !/**/*.m
@@ -82,11 +78,12 @@
 # to change the name of the Output folder to whatever it is called in your
 # project, but we strongly recommend that you only include these files in
 # a subset of the folders where you are certain no private data is ever stored.
-!/**/Output/**/*.txt
-!/**/Output/**/*.csv
-!/**/Output/**/*.xml
-!/**/Output/**/*.eps
-!/**/Output/**/*.svg
+
+!**/*.txt
+!**/*.csv
+!**/*.xml
+!**/*.eps
+!**/*.svg
 
 #######################
 # Include all the files with passwords or tokens here. All files named
@@ -94,6 +91,7 @@
 # format you are using. Additionally, all content in any folder called
 password or passwords are also ignored. NOTE that your project might be
 using different names and then you must edit the lines below accordingly.
+
 password.*
 passwords.*
 password/
