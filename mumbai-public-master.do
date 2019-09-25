@@ -28,7 +28,7 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
   order * , seq
   order qutub_id case public, first
 
-  iecodebook export using "${directory}/metadata/sp-metadata.xlsx" , replace
+  iecodebook export using "${directory}/data/sp-metadata.xlsx" , replace
 
   save "${directory}/constructed/sp-data.dta" , replace
 
