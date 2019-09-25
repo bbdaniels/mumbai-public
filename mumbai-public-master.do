@@ -5,11 +5,15 @@ global rawdata "/Users/bbdaniels/Dropbox/Research/Qutub/Restricted/MUMBAI ANALYS
 global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
 
 // Part 1: Load datafiles into Git location
-hashdata "${rawdata}/SP1_4_Wave2.dta" ///
-   using "${directory}/data/sp-private.dta" , replace
 
-hashdata "${rawdata}/SP1_4_Public.dta" ///
-   using "${directory}/data/sp-public.dta" , replace
+  // Hashdata command (in development)
+  qui run "${directory}/hashdata/hashdata.ado"
+
+  hashdata "${rawdata}/SP1_4_Wave2.dta" ///
+     using "${directory}/data/sp-private.dta" , replace
+
+  hashdata "${rawdata}/SP1_4_MCGM.dta" ///
+     using "${directory}/data/sp-public.dta" , replace
 
 // Part 2: Build constructed data from raw data
 
