@@ -30,11 +30,8 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
 
   iecodebook export using "${directory}/data/sp-metadata.xlsx" , replace
 
-  save "${directory}/constructed/sp-data.dta" , replace
-
   // Tracker for final data changes -- currently set to reset since will make lots of changes
-  hashdata "${directory}/constructed/sp-data.dta" ///
-     using "${directory}/constructed/sp-data.dta" , replace reset
+  hashdata using "${directory}/constructed/sp-data.dta" , replace reset
 
 // Part 3: Analysis
 
