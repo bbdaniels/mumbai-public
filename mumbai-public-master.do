@@ -1,7 +1,7 @@
 // Master file for Mumbai Public Sector analysis
 
 // Set global directory locations
-global rawdata "/Users/bbdaniels/Dropbox/Research/Qutub/Restricted/MUMBAI ANALYSIS/constructed"
+global rawdata "/Users/bbdaniels/Box Sync/Qutub/MUMBAI ANALYSIS/constructed"
 global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
 
 // Globals
