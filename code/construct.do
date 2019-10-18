@@ -17,10 +17,10 @@
     lab def group 1 "Non-PPIA" 2 "Public" 3 "PPIA"
     lab val group group
 
-  label def cp_4a 4 "Private" 5 "Private PPIA" , add
-    replace cp_4a = 4 if facility_ppia_wave2 == 0
-    replace cp_4a = 5 if facility_ppia_wave2 == 1
-    
+  label def cp_4a 4 "Private" 5 "Private PPIA" , modify
+    replace cp_4a = 4 if ppia_facility_2 == 0
+    replace cp_4a = 5 if ppia_facility_2 == 1
+
 
   // Cleanup
   order * , seq
