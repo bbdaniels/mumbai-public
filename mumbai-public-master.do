@@ -38,7 +38,7 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
   qui run "${directory}/hashdata/hashdata.ado"
 
   hashdata "${rawdata}/SP1_4_Wave2.dta" ///
-     using "${directory}/data/sp-private.dta" , replace
+     using "${directory}/data/sp-private.dta" , replace reset
 
   hashdata "${rawdata}/SP1_4_MCGM.dta" ///
      using "${directory}/data/sp-public.dta" , replace
@@ -48,7 +48,7 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
   do "${directory}/code/construct.do"
 
 // Part 3: Analysis
-
+-
   do "${directory}/code/analysis.do"
 
 // Have a lovely day!
