@@ -4,11 +4,11 @@
 use "${directory}/constructed/sp-data.dta" , clear
 
   // Process measures
-  local process = "p time_waiting time ce_2 dr_1"
+  local process = "p checklist_n time_waiting time ce_2 dr_1 g11"
   // Quality measures
-  local quality = "correct dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9"
+  local quality = "correct ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9"
   // Satisfaction
-  local satisfaction = "g1 g2 g3 g4 g5 g6 g7 g8 g9 g10 g11"
+  local satisfaction = "g1 g2 g3 g4 g5 g6 g7 g8 g9 g10"
   // Shortcut
   local pq = "`process' `quality' `satisfaction'"
 
@@ -105,7 +105,7 @@ foreach var of varlist time_waiting g11 correct time checklist_n  {
 
   local ++x
   tw (lowess `var' p , lc(black) lw(thick) ) ///
-    , ytit(" ") title("`label'", justification(left) color(black) span pos(11)) 
+    , ytit(" ") title("`label'", justification(left) color(black) span pos(11))
   graph save "${directory}/temp/cost-`x'.gph" , replace
 }
 
