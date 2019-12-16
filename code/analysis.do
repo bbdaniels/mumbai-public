@@ -91,7 +91,9 @@ forest reg ///
   (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
   if type > 1 ///
 , t(private) d b bh ///
-  graphopts(ysize(8) ylab(,labsize(small)) xtit(,size(vsmall)))
+  graphopts(ysize(8) ylab(,labsize(vsmall)) ///
+    xlab(-2 "2 SD" -1 "1 SD" 0 " " 1 "1 SD" 2 "2 SD") xscale(alt) xoverhang ///
+    xtit(" {&larr} Favors Public   Favors Private {&rarr}",size(small)))
 
   graph export "${directory}/outputs/comparison.eps" , replace
 
