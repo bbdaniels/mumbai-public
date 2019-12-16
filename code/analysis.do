@@ -48,7 +48,7 @@ gen c = correct*100
   lab var c "Quality (0-100)"
 
 local x = 0
-foreach var of varlist time_waiting time c p g11 {
+foreach var of varlist time_waiting g11 c time checklist_n p  {
 local ++x
 betterbarci `var' ///
   , over(type) ylab(,labsize(small)) v ///
@@ -63,7 +63,8 @@ betterbarci `var' ///
     "${directory}/temp/convenience-3.gph" ///
     "${directory}/temp/convenience-4.gph" ///
     "${directory}/temp/convenience-5.gph" ///
-    , r(1)
+    "${directory}/temp/convenience-6.gph" ///
+    , r(2)
 
     graph export "${directory}/outputs/convenience.eps" , replace
 
@@ -75,6 +76,24 @@ betterbar g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
     legend(on c(1) size(small)) ysize(7) ylab(,labsize(small))
 
     graph export "${directory}/outputs/satisfaction.eps" , replace
+
+
+// Big comparison -----------------------------------------------------------------------------
+use "${directory}/constructed/sp-data.dta" , clear
+
+gen private = 1-public
+  lab var private "Private Sector"
+
+forest reg ///
+  (p checklist_n time_waiting time ce_2 dr_1) ///
+  (correct dr_4 re_1 re_3 re_4) ///
+  (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
+  (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+  if type > 1 ///
+, t(private) d b bh ///
+  graphopts(ysize(8) ylab(,labsize(small)) xtit(,size(vsmall)))
+
+  graph export "${directory}/outputs/comparison.eps" , replace
   -
 
 
