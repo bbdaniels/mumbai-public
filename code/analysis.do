@@ -121,4 +121,54 @@ foreach var of varlist time_waiting g11 correct time checklist_n  {
 
     graph export "${directory}/outputs/costs.eps" , replace
 
+// Cost of time --------------------------------------------------------------------------------
+
+use "${directory}/constructed/sp-data.dta" if public == 1, clear
+
+local x = 0
+foreach var of varlist time_waiting g11 correct checklist_n  {
+  local label : var label `var'
+
+  local ++x
+  tw (lowess `var' time , lc(black) lw(thick) ) ///
+    , ytit(" ") title("`label'", justification(left) color(black) span pos(11))
+  graph save "${directory}/temp/time-`x'.gph" , replace
+}
+
+  graph combine ///
+    "${directory}/temp/time-1.gph" ///
+    "${directory}/temp/time-2.gph" ///
+    "${directory}/temp/time-3.gph" ///
+    "${directory}/temp/time-4.gph" ///
+    , c(1) ysize(8) imargin(10 10 0 0)
+
+    graph save "${directory}/outputs/time-public.gph" , replace
+
+use "${directory}/constructed/sp-data.dta" if public == 0, clear
+
+local x = 0
+foreach var of varlist time_waiting g11 correct checklist_n  {
+  local label : var label `var'
+
+  local ++x
+  tw (lowess `var' time , lc(black) lw(thick) ) ///
+    , ytit(" ") title("`label'", justification(left) color(black) span pos(11))
+  graph save "${directory}/temp/time-`x'.gph" , replace
+}
+
+  graph combine ///
+    "${directory}/temp/time-1.gph" ///
+    "${directory}/temp/time-2.gph" ///
+    "${directory}/temp/time-3.gph" ///
+    "${directory}/temp/time-4.gph" ///
+    , c(1) ysize(8) imargin(10 10 0 0)
+
+    graph save "${directory}/outputs/time-private.gph" , replace
+
+  graph combine ///
+    "${directory}/outputs/time-public.gph" ///
+    "${directory}/outputs/time-private.gph" ///
+  , r(1) ycom
+
+
 // End of dofile
