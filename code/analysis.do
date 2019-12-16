@@ -78,7 +78,7 @@ betterbar g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
     graph export "${directory}/outputs/satisfaction.eps" , replace
 
 
-// Big comparison -----------------------------------------------------------------------------
+// Big comparison ------------------------------------------------------------------------------
 use "${directory}/constructed/sp-data.dta" , clear
 
 gen private = 1-public
@@ -94,7 +94,29 @@ forest reg ///
   graphopts(ysize(8) ylab(,labsize(small)) xtit(,size(vsmall)))
 
   graph export "${directory}/outputs/comparison.eps" , replace
-  -
 
+// Cost of things ------------------------------------------------------------------------------
+
+use "${directory}/constructed/sp-data.dta" if public == 0, clear
+
+local x = 0
+foreach var of varlist time_waiting g11 correct time checklist_n  {
+  local label : var label `var'
+
+  local ++x
+  tw (lowess `var' p , lc(black) lw(thick) ) ///
+    , ytit(" ") title("`label'", justification(left) color(black) span pos(11)) 
+  graph save "${directory}/temp/cost-`x'.gph" , replace
+}
+
+  graph combine ///
+    "${directory}/temp/cost-1.gph" ///
+    "${directory}/temp/cost-2.gph" ///
+    "${directory}/temp/cost-3.gph" ///
+    "${directory}/temp/cost-4.gph" ///
+    "${directory}/temp/cost-5.gph" ///
+    , c(1) ysize(8) imargin(10 10 0 0)
+
+    graph export "${directory}/outputs/costs.eps" , replace
 
 // End of dofile
