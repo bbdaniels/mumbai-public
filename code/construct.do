@@ -21,6 +21,25 @@
     replace cp_4a = 4 if ppia_facility_2 == 0
     replace cp_4a = 5 if ppia_facility_2 == 1
 
+  recode cp_4a (1=1 "Public Dispensary")(2/3 = 2 "Public Hospital")(4/5 = 3 "Private Hospital") ///
+    , gen(type)
+
+    lab var type "Facility Type"
+
+    drop cp_4a
+
+  // Recoding quality
+  foreach var in g1 g2 g3 g4 g5  {
+    replace `var' = 1 if `var' > 1 & !missing(`var')
+  }
+  foreach var in g6 g7 g8 g9 g10  {
+    recode `var' (1/2=0)(3/max=1)
+    lab val `var' yesno
+  }
+
+  // Recode case
+  replace case = 2 if case == 4
+
 
   // Cleanup
   order * , seq

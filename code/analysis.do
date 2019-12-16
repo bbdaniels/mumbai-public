@@ -1,81 +1,81 @@
 // Code for data analysis
 
-
-// Top level breakdown -------------------------------------------------------------------------
-use "${directory}/constructed/sp-data.dta" , clear
-betterbarci correct if public == 1, over(cp_4a) by(case) ///
-  legend(on c(1) ring(0) pos(1)) v ylab(${pct})
-
-  graph export "${directory}/outputs/correct-public.eps" , replace
-
-// Correctness ---------------------------------------------------------------------------------
-use "${directory}/constructed/sp-data.dta" , clear
-// keep if cp_4a > 2
-graph bar dr_4 re_1 re_3 re_4 re_5 if case == 1 ///
-  , over(cp_4a) xsize(10) ylab(${pct}) title("Case 1") ///
-  legend(on order(1 "Referral" 2 "CXR" 3 "AFB" 4 "GX" 5 "DST"))
-
-  graph export "${directory}/outputs/correct-1.eps" , replace
-
-graph bar dr_4 re_1 re_3 re_4 re_5 if case == 4 ///
-  , over(cp_4a) xsize(10) ylab(${pct}) title("Case 4") ///
-  legend(on order(1 "Referral" 2 "CXR" 3 "AFB" 4 "GX" 5 "DST"))
-
-  graph export "${directory}/outputs/correct-4.eps" , replace
-
-
-
-// Case by case --------------------------------------------------------------------------------
-use "${directory}/constructed/sp-data.dta" , clear
-lab var dr_4 "Referral"
-
-betterbarci re_1 re_3 re_4 re_5 dr_4 med_k_any_9 ///
-  med_l_any_1 med_l_any_2 med_l_any_3  ///
-if public == 1 & case == 1 ///
-, over(cp_4a) yscale(noline) ///
-  xlab(${pct}) legend(on c(1) region(lc(none) fc(none))) title("Case 1")
-
-  graph save "${directory}/outputs/c1.gph" , replace
-
-betterbarci re_1 re_3 re_4 re_5 dr_4 med_k_any_9 ///
-  med_l_any_1 med_l_any_2 med_l_any_3  ///
-if public == 1 & case == 4 ///
-, over(cp_4a)  yscale(noline) ///
-  xlab(${pct}) legend(on c(1) region(lc(none) fc(none))) title("Case 4")
-
-  graph save "${directory}/outputs/c4.gph" , replace
-
-graph combine ///
-  "${directory}/outputs/c1.gph" ///
-  "${directory}/outputs/c4.gph"
-
-  graph export "${directory}/outputs/basics.eps" , replace
-
-
-
-// Groupwise comparison ------------------------------------------------------------------------
-use "${directory}/constructed/sp-data.dta" , clear
-betterbarci correct, over(group) by(case) ///
-  legend(on c(1) ring(0) pos(1)) v ylab(${pct})
-
-// Split -------------------------------------------------------------------------
+// Summary statistics --------------------------------------------------------------------------
 use "${directory}/constructed/sp-data.dta" , clear
 
-  betterbarci correct , over(cp_4a) by(case) ///
-    legend(on c(1) ring(0) pos(1)) v ylab(${pct})
+  // Process measures
+  local process = "p time_waiting time ce_2 dr_1"
+  // Quality measures
+  local quality = "correct dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9"
+  // Satisfaction
+  local satisfaction = "g1 g2 g3 g4 g5 g6 g7 g8 g9 g10 g11"
+  // Shortcut
+  local pq = "`process' `quality' `satisfaction'"
 
-  graph export "${directory}/outputs/correct-publicprivate.eps" , replace
+sumstats ///
+  (`pq' if type == 1) ///
+  (`pq' if type == 2) ///
+  (`pq' if type == 3) ///
+  using "${directory}/outputs/sp-summary.xlsx" ///
+  , stats(mean) replace
 
+// Quality differences -------------------------------------------------------------------------
+use "${directory}/constructed/sp-data.dta" , clear
 
-   betterbarci g11 , over(cp_4a) by(case) ///
-     legend(on c(1) ring(1) pos(6))
+forv case = 1/2 {
+betterbar ///
+  correct ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
+  if case == `case' , over(type) title("Case `case'" , justification(left) color(black) span pos(11)) ///
+  legend(on c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small))
 
-  recode g6 g7 g8 g9 g10 (3=2)(2=1)(1=0)
+  graph save "${directory}/temp/quality-`case'.gph" , replace
+}
 
-  betterbarci g6 g7 g8 g9 g10, over(cp_4a) ///
-    legend(on c(1) ring(1) pos(6)) xlab(0 "No" 1 "Somewhat" 2 "Yes")
+  grc1leg ///
+    "${directory}/temp/quality-1.gph" ///
+    "${directory}/temp/quality-2.gph" ///
+    , c(1)
 
-  betterbarci g13 g14 g15 if public == 1, over(cp_4a) ///
-    legend(on c(1) ring(1) pos(6))
+    graph save "${directory}/temp/quality.gph" , replace
+    graph combine "${directory}/temp/quality.gph" , ysize(9)
+
+  graph export "${directory}/outputs/quality.eps" , replace
+
+// Price and convenience -----------------------------------------------------------------------
+use "${directory}/constructed/sp-data.dta" , clear
+
+gen c = correct*100
+  lab var c "Quality (0-100)"
+
+local x = 0
+foreach var of varlist time_waiting time c p g11 {
+local ++x
+betterbarci `var' ///
+  , over(type) ylab(,labsize(small)) v ///
+    barl format(%9.1f) legend(on r(1) pos(6) ring(1) size(small)) yscale(off)
+
+    graph save "${directory}/temp/convenience-`x'.gph" , replace
+}
+
+  grc1leg ///
+    "${directory}/temp/convenience-1.gph" ///
+    "${directory}/temp/convenience-2.gph" ///
+    "${directory}/temp/convenience-3.gph" ///
+    "${directory}/temp/convenience-4.gph" ///
+    "${directory}/temp/convenience-5.gph" ///
+    , r(1)
+
+    graph export "${directory}/outputs/convenience.eps" , replace
+
+// SP Satisfaction -----------------------------------------------------------------------------
+use "${directory}/constructed/sp-data.dta" , clear
+
+betterbar g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
+  , over(type) pct barl ci xoverhang xlab(${pct}) ///
+    legend(on c(1) size(small)) ysize(7) ylab(,labsize(small))
+
+    graph export "${directory}/outputs/satisfaction.eps" , replace
+  -
+
 
 // End of dofile

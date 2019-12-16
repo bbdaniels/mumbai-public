@@ -1,7 +1,7 @@
 // Master file for Mumbai Public Sector analysis
 
 // Set global directory locations
-global rawdata "/Users/bbdaniels/Box Sync/Qutub/MUMBAI ANALYSIS/constructed"
+global rawdata "/Users/bbdaniels/Box Sync/Qutub/MUMBAI/constructed"
 global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
 
 // Globals
@@ -37,10 +37,10 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
   // Hashdata command to import data from remote repository
   qui run "${directory}/hashdata/hashdata.ado"
 
-  hashdata "${rawdata}/SP1_4_Wave2.dta" ///
+  hashdata "${rawdata}/sp-wave-2.dta" ///
      using "${directory}/data/sp-private.dta" , replace reset
 
-  hashdata "${rawdata}/SP1_4_MCGM.dta" ///
+  hashdata "${rawdata}/sp-mcgm.dta" ///
      using "${directory}/data/sp-public.dta" , replace
 
 // Part 2: Build constructed data from raw data
