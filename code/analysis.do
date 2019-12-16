@@ -85,7 +85,7 @@ gen private = 1-public
   lab var private "Private Sector"
 
 forest reg ///
-  (p checklist_n time_waiting time ce_2 dr_1) ///
+  (p checklist_n time_waiting time ce_2 dr_1 g11) ///
   (correct dr_4 re_1 re_3 re_4) ///
   (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
   (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
