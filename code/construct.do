@@ -44,6 +44,14 @@
     egen checklist_n = rsum(sp1_h_? sp1_h_?? sp4_h_? sp4_h_??)
     lab var checklist_n "Number of Questions"
 
+  drop correct
+    gen correct = ///
+    ( ((dr_4  == 1 | re_1 == 1 | re_3 == 1 | re_4 == 1 | re_5 == 1) 		& case == 1) ///
+    | ((dr_4  == 1 |                         re_4 == 1 | re_5 == 1) 		& case == 2) ///
+    )
+			label var correct "Correct Case Management"
+			label val correct yesno
+
   // Recode SP ID
   drop sp_id
   egen sp_id = group(sp_name)

@@ -4,20 +4,18 @@
 use "${directory}/constructed/sp-data.dta" , clear
 
   // Process measures
-  local process = "p checklist_n time_waiting time ce_2 dr_1 g11"
+  local experience = "correct g11 time_waiting p time checklist_n"
   // Quality measures
-  local quality = "correct ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9"
+  local quality = "ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9"
   // Satisfaction
   local satisfaction = "g1 g2 g3 g4 g5 g6 g7 g8 g9 g10"
   // Shortcut
-  local pq = "`process' `quality' `satisfaction'"
+  local pq = "`experience' `quality' `satisfaction'"
 
 sumstats ///
-  (`pq' if type == 1) ///
-  (`pq' if type == 2) ///
-  (`pq' if type == 3) ///
+  (`pq') ///
   using "${directory}/outputs/sp-summary.xlsx" ///
-  , stats(mean) replace
+  , stats(mean sd p25 med p75) replace
 
 // Quality differences -------------------------------------------------------------------------
 use "${directory}/constructed/sp-data.dta" , clear
@@ -28,7 +26,7 @@ betterbar ///
   if case == `case' , over(type) n xoverhang ///
   legend(on c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small)) ysize(5)
 
-  graph export "${directory}/outputs/quality-`case'.eps" , replace
+  graph export "${directory}/outputs/f-quality-`case'.eps" , replace
 }
 
 // Price and convenience -----------------------------------------------------------------------
@@ -59,7 +57,7 @@ betterbarci `var' ///
     graph save "${directory}/temp/convenience.gph" , replace
     graph combine "${directory}/temp/convenience.gph" , ysize(5)
 
-    graph export "${directory}/outputs/convenience.eps" , replace
+    graph export "${directory}/outputs/f-convenience.eps" , replace
 
 // SP Satisfaction -----------------------------------------------------------------------------
 use "${directory}/constructed/sp-data.dta" , clear
@@ -68,7 +66,7 @@ betterbar g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
   , over(type) n pct barl ci xoverhang xlab(${pct}) ///
     legend(on c(1) size(small)) ysize(5) ylab(,labsize(small))
 
-    graph export "${directory}/outputs/satisfaction.eps" , replace
+    graph export "${directory}/outputs/f-satisfaction.eps" , replace
 
 
 // Big comparison ------------------------------------------------------------------------------
@@ -78,9 +76,9 @@ gen private = 1-public
   lab var private "Private Sector"
 
 forest reg ///
-  (p checklist_n time_waiting time ce_2 dr_1 g11) ///
-  (correct dr_4 re_1 re_3 re_4) ///
+  (ce_2 dr_1 dr_4 re_1 re_3 re_4) ///
   (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
+  (correct g11 time_waiting p time checklist_n) ///
   (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
   if type > 1 ///
 , cl(qutub_id) t(private) controls(i.case i.sp_id) d b bh sort(global) ///
@@ -88,7 +86,7 @@ forest reg ///
     xlab(-2 "2 SD" -1 "1 SD" 0 " " 1 "1 SD" 2 "2 SD") xscale(alt) xoverhang ///
     xtit(" {&larr} Favors Public   Favors Private {&rarr}",size(small)))
 
-  graph export "${directory}/outputs/comparison.eps" , replace
+  graph export "${directory}/outputs/f-comparison.eps" , replace
 
 // Cost of things ------------------------------------------------------------------------------
 
@@ -116,7 +114,7 @@ foreach var of varlist time_waiting g11 c time checklist_n ce_2 {
     "${directory}/temp/cost-6.gph" ///
     , c(2) ysize(6) imargin(10 10 0 0)
 
-    graph export "${directory}/outputs/costs.eps" , replace
+    graph export "${directory}/outputs/f-costs.eps" , replace
 
 // Cost of time --------------------------------------------------------------------------------
 
@@ -143,7 +141,7 @@ foreach var of varlist time_waiting g11 correct checklist_n  {
     "${directory}/temp/time-4.gph" ///
     , ysize(6) imargin(0 0 0 0)
 
-    graph export "${directory}/outputs/time.eps" , replace
+    graph export "${directory}/outputs/f-time.eps" , replace
 
 
 
