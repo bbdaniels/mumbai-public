@@ -37,9 +37,34 @@
     lab val `var' yesno
   }
 
-  // Recode case
+  // Re-generating mixed measures
   replace case = 2 if case == 4
 
+  drop checklist_n
+    egen checklist_n = rsum(sp1_h_? sp1_h_?? sp4_h_? sp4_h_??)
+    lab var checklist_n "Number of Questions"
+
+  // Recode SP ID
+  drop sp_id
+  egen sp_id = group(sp_name)
+
+  // Variable labelling
+  lab var dr_4 "Referred Away"
+  lab var re_4 "Xpert MTB/RIF"
+  lab var p "Amount Paid (INR)"
+
+  lab var g1 "Provider Used Cell Phone"
+  lab var g2 "Other People Were In Room"
+  lab var g3 "Provider Had A TV On"
+  lab var g4 "SP Liked The Provider"
+  lab var g5 "SP Would Go To This Provider"
+  lab var g6 "Provider Created A Private Environment"
+  lab var g7 "Provider Seemed Knowledgeable About Illness"
+  lab var g8 "Provider Addressed Worries Seriously"
+  lab var g9 "Provider Explained SP Condition"
+  lab var g10 "Provider Explained SP Treatment Plan"
+
+  lab var g11 "SP Subjective Rating (1-10)"
 
   // Cleanup
   order * , seq

@@ -24,22 +24,12 @@ use "${directory}/constructed/sp-data.dta" , clear
 
 forv case = 1/2 {
 betterbar ///
-  correct ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
-  if case == `case' , over(type) title("Case `case'" , justification(left) color(black) span pos(11)) ///
-  legend(on c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small))
+  ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
+  if case == `case' , over(type) n xoverhang ///
+  legend(on c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small)) ysize(5)
 
-  graph save "${directory}/temp/quality-`case'.gph" , replace
+  graph export "${directory}/outputs/quality-`case'.eps" , replace
 }
-
-  grc1leg ///
-    "${directory}/temp/quality-1.gph" ///
-    "${directory}/temp/quality-2.gph" ///
-    , c(1)
-
-    graph save "${directory}/temp/quality.gph" , replace
-    graph combine "${directory}/temp/quality.gph" , ysize(9)
-
-  graph export "${directory}/outputs/quality.eps" , replace
 
 // Price and convenience -----------------------------------------------------------------------
 use "${directory}/constructed/sp-data.dta" , clear
@@ -48,11 +38,11 @@ gen c = correct*100
   lab var c "Quality (0-100)"
 
 local x = 0
-foreach var of varlist time_waiting g11 c time checklist_n p  {
+foreach var of varlist c g11 time_waiting p time checklist_n  {
 local ++x
 betterbarci `var' ///
-  , over(type) ylab(,labsize(small)) v ///
-    barl format(%9.1f) legend(on r(1) pos(6) ring(1) size(small)) yscale(off)
+  , over(type) yscale(off) ylab(,labsize(small)) v n ///
+    barl format(%9.1f) legend(on r(1) pos(6) ring(1) size(small) symxsize(small))
 
     graph save "${directory}/temp/convenience-`x'.gph" , replace
 }
@@ -64,7 +54,10 @@ betterbarci `var' ///
     "${directory}/temp/convenience-4.gph" ///
     "${directory}/temp/convenience-5.gph" ///
     "${directory}/temp/convenience-6.gph" ///
-    , r(2)
+    , c(2)
+
+    graph save "${directory}/temp/convenience.gph" , replace
+    graph combine "${directory}/temp/convenience.gph" , ysize(5)
 
     graph export "${directory}/outputs/convenience.eps" , replace
 
@@ -72,8 +65,8 @@ betterbarci `var' ///
 use "${directory}/constructed/sp-data.dta" , clear
 
 betterbar g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
-  , over(type) pct barl ci xoverhang xlab(${pct}) ///
-    legend(on c(1) size(small)) ysize(7) ylab(,labsize(small))
+  , over(type) n pct barl ci xoverhang xlab(${pct}) ///
+    legend(on c(1) size(small)) ysize(5) ylab(,labsize(small))
 
     graph export "${directory}/outputs/satisfaction.eps" , replace
 
@@ -90,8 +83,8 @@ forest reg ///
   (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
   (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
   if type > 1 ///
-, t(private) d b bh ///
-  graphopts(ysize(8) ylab(,labsize(vsmall)) ///
+, cl(qutub_id) t(private) controls(i.case i.sp_id) d b bh sort(global) ///
+  graphopts(ysize(5) ylab(,labsize(vsmall)) ///
     xlab(-2 "2 SD" -1 "1 SD" 0 " " 1 "1 SD" 2 "2 SD") xscale(alt) xoverhang ///
     xtit(" {&larr} Favors Public   Favors Private {&rarr}",size(small)))
 
@@ -101,12 +94,15 @@ forest reg ///
 
 use "${directory}/constructed/sp-data.dta" if public == 0, clear
 
+gen c = correct*100
+  lab var c "Quality (0-100)"
+
 local x = 0
-foreach var of varlist time_waiting g11 correct time checklist_n  {
+foreach var of varlist time_waiting g11 c time checklist_n ce_2 {
   local label : var label `var'
 
   local ++x
-  tw (lowess `var' p , lc(black) lw(thick) ) ///
+  tw (lowess `var' p if p <= 1000, lc(black) lw(thick) ) ///
     , ytit(" ") title("`label'", justification(left) color(black) span pos(11))
   graph save "${directory}/temp/cost-`x'.gph" , replace
 }
@@ -117,58 +113,39 @@ foreach var of varlist time_waiting g11 correct time checklist_n  {
     "${directory}/temp/cost-3.gph" ///
     "${directory}/temp/cost-4.gph" ///
     "${directory}/temp/cost-5.gph" ///
-    , c(1) ysize(8) imargin(10 10 0 0)
+    "${directory}/temp/cost-6.gph" ///
+    , c(2) ysize(6) imargin(10 10 0 0)
 
     graph export "${directory}/outputs/costs.eps" , replace
 
 // Cost of time --------------------------------------------------------------------------------
 
-use "${directory}/constructed/sp-data.dta" if public == 1, clear
+use "${directory}/constructed/sp-data.dta" , clear
 
 local x = 0
 foreach var of varlist time_waiting g11 correct checklist_n  {
   local label : var label `var'
 
   local ++x
-  tw (lowess `var' time , lc(black) lw(thick) ) ///
-    , ytit(" ") title("`label'", justification(left) color(black) span pos(11))
+  tw ///
+    (lowess `var' time if public == 1, lc(black) lw(thick) ) ///
+    (lowess `var' time if public == 0 & time > 1, lc(maroon) lw(thick) ) ///
+    , ytit(" ") title("`label'", justification(left) color(black) span pos(11)) ///
+      legend(on order(1 "Public" 2 "Private"))
+
   graph save "${directory}/temp/time-`x'.gph" , replace
 }
 
-  graph combine ///
+  grc1leg ///
     "${directory}/temp/time-1.gph" ///
     "${directory}/temp/time-2.gph" ///
     "${directory}/temp/time-3.gph" ///
     "${directory}/temp/time-4.gph" ///
-    , c(1) ysize(8) imargin(10 10 0 0)
+    , ysize(6) imargin(0 0 0 0)
 
-    graph save "${directory}/outputs/time-public.gph" , replace
+    graph export "${directory}/outputs/time.eps" , replace
 
-use "${directory}/constructed/sp-data.dta" if public == 0, clear
 
-local x = 0
-foreach var of varlist time_waiting g11 correct checklist_n  {
-  local label : var label `var'
-
-  local ++x
-  tw (lowess `var' time , lc(black) lw(thick) ) ///
-    , ytit(" ") title("`label'", justification(left) color(black) span pos(11))
-  graph save "${directory}/temp/time-`x'.gph" , replace
-}
-
-  graph combine ///
-    "${directory}/temp/time-1.gph" ///
-    "${directory}/temp/time-2.gph" ///
-    "${directory}/temp/time-3.gph" ///
-    "${directory}/temp/time-4.gph" ///
-    , c(1) ysize(8) imargin(10 10 0 0)
-
-    graph save "${directory}/outputs/time-private.gph" , replace
-
-  graph combine ///
-    "${directory}/outputs/time-public.gph" ///
-    "${directory}/outputs/time-private.gph" ///
-  , r(1) ycom
 
 
 // End of dofile
