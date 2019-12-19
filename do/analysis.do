@@ -16,10 +16,9 @@ use "${directory}/constructed/mcgm.dta" , clear
 
   graph export "${directory}/outputs/f-randomization-1.eps" , replace
 
-
   forest reg (C2 mcgm_sputum_pct mcgm_sputum_pos mcgm_cbnaat ///
     mcgm_cbnaat_mtb mcgm_cbnaat_rif mcgm_cxr mcgm_cxr_pos) ///
-  , t(sampled) graphopts(xtit("Difference in dispensaries receiving SPs"))
+  , t(sampled) d graphopts(xtit("Difference in dispensaries receiving SPs"))
 
   graph export "${directory}/outputs/f-randomization-2.eps" , replace
 
