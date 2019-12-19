@@ -1,8 +1,18 @@
 // Master file for Mumbai Public Sector analysis
 
 // Set global directory locations
-global rawdata "/Users/bbdaniels/Box Sync/Qutub/MUMBAI/constructed"
-global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
+  global rawdata "/Users/bbdaniels/Box Sync/Qutub/MUMBAI/constructed"
+  global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
+
+  sysdir set PLUS "${directory}/ado/"
+
+  net from "http://www.stata.com/users/vwiggins"
+    net install grc1leg
+
+  net from "https://github.com/bbdaniels/stata/raw/master/"
+    net install sumstats
+    net install betterbar
+    net install forest
 
 // Globals
 
@@ -35,7 +45,7 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
 // Part 1: Load datafiles into Git location
 
   // Hashdata command to import data from remote repository
-  qui run "${directory}/hashdata/hashdata.ado"
+  qui run "${directory}/ado/hashdata/hashdata.ado"
 
   hashdata "${rawdata}/sp-wave-2.dta" ///
      using "${directory}/data/sp-private.dta" , replace reset
@@ -43,18 +53,18 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
   hashdata "${rawdata}/sp-mcgm.dta" ///
      using "${directory}/data/sp-public.dta" , replace
 
- hashdata "${rawdata}/mcgm.dta" ///
+  hashdata "${rawdata}/mcgm.dta" ///
     using "${directory}/constructed/mcgm.dta" , replace reset
 
- hashdata "${rawdata}/mcgm-ts.dta" ///
+  hashdata "${rawdata}/mcgm-ts.dta" ///
     using "${directory}/constructed/mcgm-ts.dta" , replace reset
 
 // Part 2: Build constructed data from raw data
 
-  do "${directory}/code/construct.do"
+  do "${directory}/do/construct.do"
 
 // Part 3: Analysis
--
-  do "${directory}/code/analysis.do"
+
+  do "${directory}/do/analysis.do"
 
 // Have a lovely day!

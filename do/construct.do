@@ -81,6 +81,5 @@
   // Documentation for final data -- currently set to reset since will make lots of changes
   hashdata using "${directory}/constructed/sp-data.dta" , replace reset
     use "${directory}/constructed/sp-data.dta" , clear
-  iecodebook export using "${directory}/data/sp-metadata.xlsx" , replace
 
 // End of dofile

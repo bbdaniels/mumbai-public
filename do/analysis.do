@@ -1,6 +1,8 @@
 // Code for data analysis
 
-// MCGM data -----------------------------------------------------------------------------------
+// Randomization -------------------------------------------------------------------------------
+use "${directory}/constructed/mcgm.dta" , clear
+
 
 
 // Summary statistics --------------------------------------------------------------------------
@@ -90,63 +92,5 @@ forest reg ///
     xtit(" {&larr} Favors Public   Favors Private {&rarr}",size(small)))
 
   graph export "${directory}/outputs/f-comparison.eps" , replace
-
-// Cost of things ------------------------------------------------------------------------------
-
-use "${directory}/constructed/sp-data.dta" if public == 0, clear
-
-gen c = correct*100
-  lab var c "Quality (0-100)"
-
-local x = 0
-foreach var of varlist time_waiting g11 c time checklist_n ce_2 {
-  local label : var label `var'
-
-  local ++x
-  tw (lowess `var' p if p <= 1000, lc(black) lw(thick) ) ///
-    , ytit(" ") title("`label'", justification(left) color(black) span pos(11))
-  graph save "${directory}/temp/cost-`x'.gph" , replace
-}
-
-  graph combine ///
-    "${directory}/temp/cost-1.gph" ///
-    "${directory}/temp/cost-2.gph" ///
-    "${directory}/temp/cost-3.gph" ///
-    "${directory}/temp/cost-4.gph" ///
-    "${directory}/temp/cost-5.gph" ///
-    "${directory}/temp/cost-6.gph" ///
-    , c(2) ysize(6) imargin(10 10 0 0)
-
-    graph export "${directory}/outputs/f-costs.eps" , replace
-
-// Cost of time --------------------------------------------------------------------------------
-
-use "${directory}/constructed/sp-data.dta" , clear
-
-local x = 0
-foreach var of varlist time_waiting g11 correct checklist_n  {
-  local label : var label `var'
-
-  local ++x
-  tw ///
-    (lowess `var' time if public == 1, lc(black) lw(thick) ) ///
-    (lowess `var' time if public == 0 & time > 1, lc(maroon) lw(thick) ) ///
-    , ytit(" ") title("`label'", justification(left) color(black) span pos(11)) ///
-      legend(on order(1 "Public" 2 "Private"))
-
-  graph save "${directory}/temp/time-`x'.gph" , replace
-}
-
-  grc1leg ///
-    "${directory}/temp/time-1.gph" ///
-    "${directory}/temp/time-2.gph" ///
-    "${directory}/temp/time-3.gph" ///
-    "${directory}/temp/time-4.gph" ///
-    , ysize(6) imargin(0 0 0 0)
-
-    graph export "${directory}/outputs/f-time.eps" , replace
-
-
-
 
 // End of dofile
