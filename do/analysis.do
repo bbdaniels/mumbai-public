@@ -3,7 +3,39 @@
 // Randomization -------------------------------------------------------------------------------
 use "${directory}/constructed/mcgm.dta" , clear
 
+  gen C2 = mcgm_opd/10
+    lab var C2 "Average OPD (x10)"
 
+  lab def sampled 0 "Not Sampled" 1 "Sampled for SPs"
+    lab val sampled sampled
+
+  betterbar C2 mcgm_sputum mcgm_sputum_pct mcgm_sputum_pos mcgm_cbnaat ///
+    mcgm_cbnaat_mtb mcgm_cbnaat_rif mcgm_cxr mcgm_cxr_pos ///
+  , over(sampled) legend(on c(1) pos(6) ring(1)) ///
+    n ci barl xoverhang format(%9.1f)
+
+  graph export "${directory}/outputs/f-randomization-1.eps" , replace
+
+
+  forest reg (C2 mcgm_sputum_pct mcgm_sputum_pos mcgm_cbnaat ///
+    mcgm_cbnaat_mtb mcgm_cbnaat_rif mcgm_cxr mcgm_cxr_pos) ///
+  , t(sampled) graphopts(xtit("Difference in dispensaries receiving SPs"))
+
+  graph export "${directory}/outputs/f-randomization-2.eps" , replace
+
+
+// Time trends -------------------------------------------------------------------------------
+use "${directory}/constructed/mcgm-ts.dta" , clear
+
+  gen C2 = C/10
+    lab var C2 "Average Monthly OPD (x10)"
+
+  betterbar C2 D I J Q ///
+  , over(month) legend(on c(1) pos(5) ring(0)) ///
+    n ci barl xoverhang format(%9.1f) ///
+    barcolor(eltblue emidblue edkblue)
+
+  graph export "${directory}/outputs/f-timeseries.eps" , replace
 
 // Summary statistics --------------------------------------------------------------------------
 use "${directory}/constructed/sp-data.dta" , clear
