@@ -43,6 +43,12 @@ global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
   hashdata "${rawdata}/sp-mcgm.dta" ///
      using "${directory}/data/sp-public.dta" , replace
 
+ hashdata "${rawdata}/mcgm.dta" ///
+    using "${directory}/constructed/mcgm.dta" , replace reset
+
+ hashdata "${rawdata}/mcgm-ts.dta" ///
+    using "${directory}/constructed/mcgm-ts.dta" , replace reset
+
 // Part 2: Build constructed data from raw data
 
   do "${directory}/code/construct.do"
