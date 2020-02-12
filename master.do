@@ -1,7 +1,7 @@
 // Master file for Mumbai Public Sector analysis
 
 // Set global directory locations
-  global rawdata "/Users/bbdaniels/Box Sync/Qutub/MUMBAI/constructed"
+  global rawdata "/Users/bbdaniels/Box/Qutub/MUMBAI/constructed"
   global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
 
   sysdir set PLUS "${directory}/ado/"
@@ -10,9 +10,9 @@
     net install grc1leg
 
   net from "https://github.com/bbdaniels/stata/raw/master/"
-    net install sumstats
-    net install betterbar
-    net install forest
+    net install sumstats , replace
+    net install betterbar , replace
+    net install forest , replace
 
 // Globals
 

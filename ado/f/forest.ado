@@ -1,4 +1,4 @@
-//! version 2.1 31DEC2019  Benjamin Daniels bbdaniels@gmail.com
+*! version 2.3: 3 Feb 2020 Benjamin Daniels bbdaniels@gmail.com
 
 // Forest - Stata module to visualize results from multiple regressions on a single independent variable.
 
@@ -10,12 +10,13 @@ syntax anything /// syntax – forest reg d1 d2 d3
 	[if] [in] [fw pw iw aw] ///
 	, ///
     Treatment(string asis) /// Open-ended to allow things like ivregress inputs
-    [Controls(varlist fv ts)] /// Any variable list of controls
+    [Controls(string asis)] /// Any variable list of controls
     [or] /// odds-ratios: passes to regression command and orders log scale on chart
     [d]  /// cohen's d: standardizes all dependent variables before regression
     [sort(string asis)] /// Allow ordering of results by size: global, family
     [Bonferroni] [bh] /// FWER corrections
     [GRAPHopts(string asis)] /// Open-ended options for tw command
+    [CRITical(real 0.05)] /// Allow changing critical value: 0.05 as default
     [*] /// regression options
 
 
@@ -55,7 +56,8 @@ preserve
 
 // Loop over dependent variable lists ----------------------------------------------------------
 local labpos = 1
-forvalues i = 1/`r(nStrings)' {
+local nStrings = `r(nStrings)'
+forvalues i = 1/`nStrings' {
 
   // Set up FWER correction
 	if "`bonferroni'" != "" {
@@ -74,7 +76,7 @@ forvalues i = 1/`r(nStrings)' {
 
 		// Get label
 		local theLabel : var lab `1'
-    if "`bonferroni'`bh'" != "" local fwerlab " [F`i']"
+    if ("`bonferroni'`bh'" != "") & (`nStrings' > 1) local fwerlab " [F`i']"
 		local theLabels = `"`theLabels' "`theLabel'`fwerlab'""'
 
 		// Standardize dependent variable if d option
@@ -84,9 +86,12 @@ forvalues i = 1/`r(nStrings)' {
 			local 1 = "`dv'"
 		}
 
+    // Replace any self-referenced controls here
+    local theseControls = subinstr("`controls'","@","`1'",.)
+
 		// Regression
 		`cmd' `1' `treatment' ///
-      `controls' ///
+      `theseControls' ///
       [`weight'`exp'] ///
       , `options' `or' `thisBonferroni'
 
@@ -119,17 +124,22 @@ svmat results , n(col)
   gen bh_sig = ""
   if "`bh'" != "" {
     bys c1 : egen bh_rank = rank(pvalue)
-    bys c1 : gen bh_crit = (bh_rank/_N)*0.05 // BH crit at alpha = 0.05
+    bys c1 : gen bh_crit = (bh_rank/_N)*`critical' // BH crit at selected alpha
     gen bh_elig = pvalue if (pvalue < bh_crit)
     bys c1 : egen bh_max = max(bh_elig)
     replace bh_sig = "*" if (pvalue <= bh_max) & (bh_max != .)
-    local bhplot = `"(scatter pos b if bh_sig == "*", m(S) mc(red) )"'
-    local note `"`note' "Colored markers indicate signifcant Benjamini-Hochberg p-value at FWER {&alpha} = 0.05.""'
+    local bhplot = `"(scatter pos b if bh_sig == "*", ms(O) mlc(black) mfc(red) msize(medlarge) mlw(thin) )"'
+    local note `"`note' "Colored markers indicate signifcant Benjamini-Hochberg p-value at FWER {&alpha} = `critical'.""'
+  }
+  else {
+    gen sig = "*" if (pvalue <= `critical')
+    local bhplot = `"(scatter pos b if sig == "*", ms(O) mlc(black) mfc(red) msize(medlarge) mlw(thin) )"'
+    local note `"`note' "Colored markers indicate signifcant p-value at {&alpha} = `critical'.""'
   }
 
   // Allow family-wise sorting
   cap gen c1 = 1
-  if "`sort'" == "family" {
+  if "`sort'" == "local" {
     sort c1 b
   }
   if "`sort'" == "global" {
@@ -164,8 +174,8 @@ svmat results , n(col)
 	tw ///
 		(scatter y1 x1 , m(none)) ///
 		(scatter y2 x2 , m(none)) ///
-		(rspike  ll ul pos , horizontal lc(gs12)) ///
-		(scatter pos b if bh_sig != "*", mc(black) ) ///
+		(rspike  ll ul pos , horizontal lc(gs12) lw(thin)) ///
+		(scatter pos b if bh_sig != "*", ms(O) mlc(black) mfc(white) msize(medlarge) mlw(thin) ) ///
     `bhplot' ///
 		, `log' yscale(reverse) ///
       ylab(`theLabels',angle(0) notick nogrid) ytit(" ") legend(off) ///
