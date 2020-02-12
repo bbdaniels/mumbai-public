@@ -1,6 +1,6 @@
 
 Variable      Obs Unique      Mean        Min       Max  Label
-------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------
 qutub_id      808    366         .          .         .  Facility ID
 case          808      2  1.410891          1         2  Case
 public        808      2  .2029703          0         1  Public Provider
@@ -13,12 +13,12 @@ g1            806      2   .101737          0         1  Provider Used Cell Phon
 g2            806      2  .0980149          0         1  Other People Were In Room
 g3            806      2  .0037221          0         1  Provider Had A TV On
 g4            805      2  .9490683          0         1  SP Liked The Provider
-g5            806      2   .942928          0         1  SP Would Go To This Prov...
-g6            806      2    .82134          0         1  Provider Created A Priva...
-g7            806      2  .6972705          0         1  Provider Seemed Knowledg...
-g8            806      2  .5744417          0         1  Provider Addressed Worri...
-g9            805      2  .0770186          0         1  Provider Explained SP Co...
-g10           804      2  .3619403          0         1  Provider Explained SP Tr...
+g5            806      2   .942928          0         1  SP Would Go To This Provider
+g6            806      2    .82134          0         1  Provider Created A Private Environment
+g7            806      2  .6972705          0         1  Provider Seemed Knowledgeable About Illness
+g8            806      2  .5744417          0         1  Provider Addressed Worries Seriously
+g9            805      2  .0770186          0         1  Provider Explained SP Condition
+g10           804      2  .3619403          0         1  Provider Explained SP Treatment Plan
 g11           806      9  7.475186          2        10  SP Subjective Rating (1-10)
 med           808     11  3.318069          0        11  Number of Medicines
 med_k_any_9   808      2  .0247525          0         1  Steroids
@@ -33,4 +33,4 @@ sp_id         797     11  6.435383          1        11  group(sp_name)
 time          804    355  4.010572          0  15.33333  Time with Provider (min)
 time_waiting  799    726  61.79091  -12.38333  765.9667  Time Waiting (min)
 type          808      3  2.688119          1         3  Facility Type
-------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------
