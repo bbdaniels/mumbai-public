@@ -11,7 +11,7 @@ use "${directory}/constructed/mcgm.dta" , clear
 
   betterbar C2 mcgm_sputum mcgm_sputum_pct mcgm_sputum_pos mcgm_cbnaat ///
     mcgm_cbnaat_mtb mcgm_cbnaat_rif mcgm_cxr mcgm_cxr_pos ///
-  , over(sampled) legend(on c(1) pos(6) ring(1)) ///
+  , over(sampled) legend(on region(lc(none)) c(1) pos(6) ring(1)) ///
     n ci barl xoverhang format(%9.1f)
 
   graph export "${directory}/outputs/f-randomization-1.eps" , replace
@@ -30,7 +30,7 @@ use "${directory}/constructed/mcgm-ts.dta" , clear
     lab var C2 "Average Monthly OPD (x10)"
 
   betterbar C2 D I J Q ///
-  , over(month) legend(on c(1) pos(5) ring(0)) ///
+  , over(month) legend(on region(lc(none)) c(1) pos(5) ring(0)) ///
     n ci barl xoverhang format(%9.1f) ///
     barcolor(eltblue emidblue edkblue)
 
@@ -60,7 +60,7 @@ forv case = 1/2 {
 betterbar ///
   ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
   if case == `case' , over(type) n xoverhang ///
-  legend(on c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small)) ysize(5)
+  legend(on region(lc(none)) c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small)) ysize(5)
 
   graph export "${directory}/outputs/f-quality-`case'.eps" , replace
 }
@@ -76,7 +76,7 @@ foreach var of varlist c g11 time_waiting p time checklist_n  {
 local ++x
 betterbarci `var' ///
   , over(type) yscale(off) ylab(,labsize(small)) v n ///
-    barl format(%9.1f) legend(on r(1) pos(6) ring(1) size(small) symxsize(small))
+    barl format(%9.1f) legend(on region(lc(none)) region(lc(none)) r(1) pos(6) ring(1) size(small) symxsize(small) symysize(small))
 
     graph save "${directory}/temp/convenience-`x'.gph" , replace
 }
@@ -100,7 +100,7 @@ use "${directory}/constructed/sp-data.dta" , clear
 
 betterbar g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
   , over(type) n pct barl ci xoverhang xlab(${pct}) ///
-    legend(on c(1) size(small)) ysize(5) ylab(,labsize(small))
+    legend(on region(lc(none)) c(1) size(small)) ysize(6) ylab(,labsize(small))
 
     graph export "${directory}/outputs/f-satisfaction.eps" , replace
 
