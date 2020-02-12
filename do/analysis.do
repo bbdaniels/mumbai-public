@@ -57,10 +57,10 @@ sumstats ///
 use "${directory}/constructed/sp-data.dta" , clear
 
 forv case = 1/2 {
-betterbar ///
+betterbarci ///
   ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
   if case == `case' , over(type) n xoverhang ///
-  legend(on region(lc(none)) c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small)) ysize(5)
+  legend(on region(lc(none)) c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small)) ysize(6)
 
   graph export "${directory}/outputs/f-quality-`case'.eps" , replace
 }
