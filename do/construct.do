@@ -80,7 +80,7 @@
 
   // Documentation for final data -- currently set to reset since will make lots of changes
   iecodebook export using "${directory}/constructed/sp-data.dta" ///
-    , replace reset text copy trim("${directory}/do/analysis.do")
+    , replace text copy trim("${directory}/do/analysis.do")
     use "${directory}/constructed/sp-data.dta" , clear
 
 // End of dofile

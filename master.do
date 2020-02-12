@@ -48,16 +48,16 @@
   qui run "${directory}/ado/hashdata/hashdata.ado"
 
   hashdata "${rawdata}/sp-wave-2.dta" ///
-     using "${directory}/data/sp-private.dta" , replace reset
+     using "${directory}/data/sp-private.dta" , replace
 
   hashdata "${rawdata}/sp-mcgm.dta" ///
      using "${directory}/data/sp-public.dta" , replace
 
   hashdata "${rawdata}/mcgm.dta" ///
-    using "${directory}/constructed/mcgm.dta" , replace reset
+    using "${directory}/constructed/mcgm.dta" , replace
 
   hashdata "${rawdata}/mcgm-ts.dta" ///
-    using "${directory}/constructed/mcgm-ts.dta" , replace reset
+    using "${directory}/constructed/mcgm-ts.dta" , replace
 
 // Part 2: Build constructed data from raw data
 
