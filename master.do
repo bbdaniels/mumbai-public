@@ -16,6 +16,7 @@
     net install forest , replace
 
   set scheme uncluttered , perm
+  graph set eps fontface "Helvetica"
 
 // Globals
 
