@@ -1,4 +1,4 @@
-*! version 2.3: 3 Feb 2020 Benjamin Daniels bbdaniels@gmail.com
+*! version 2.4: 19 May 2020 Benjamin Daniels bbdaniels@gmail.com
 
 // Forest - Stata module to visualize results from multiple regressions on a single independent variable.
 
@@ -39,7 +39,7 @@ preserve
 		local l1 : label (`treatment') 1
 	}
 	else {
-	  local tlab : var label `treatment'
+	  cap local tlab : var label `treatment'
 	}
 
   // Get regression model
@@ -51,6 +51,13 @@ preserve
   parenParse `anything'
   forvalues i = 1/`r(nStrings)' {
     local string`i' = "`r(string`i')'"
+
+    // Get if-condition
+    if regexm("`string`i''"," if ") {
+      local ifcond`i' = substr("`string`i''",strpos("`string`i''"," if "),.)
+      local string`i' = subinstr("`string`i''","`ifcond`i''","",.)
+    }
+
     unab string`i' : `string`i''
   }
 
@@ -59,7 +66,7 @@ local labpos = 1
 local nStrings = `r(nStrings)'
 forvalues i = 1/`nStrings' {
 
-  // Set up FWER correction
+  // Set up multiple hypothesis correction
 	if "`bonferroni'" != "" {
     // Get Bonferroni critical value
 		local level = round(`=100-(5/`=`: word count `string`i'''-1')',0.01)
@@ -92,13 +99,14 @@ forvalues i = 1/`nStrings' {
 		// Regression
 		`cmd' `1' `treatment' ///
       `theseControls' ///
+      `ifcond`i'' ///
       [`weight'`exp'] ///
       , `options' `or' `thisBonferroni'
 
     // Store results
 		mat a = r(table)'
 		mat a = a[1,....]
-    if "`bh'" != "" mat a = `i' , a
+    mat a = `i' , a
 
 		mat results = nullmat(results) ///
 			\ a
@@ -129,12 +137,12 @@ svmat results , n(col)
     bys c1 : egen bh_max = max(bh_elig)
     replace bh_sig = "*" if (pvalue <= bh_max) & (bh_max != .)
     local bhplot = `"(scatter pos b if bh_sig == "*", ms(O) mlc(black) mfc(red) msize(medlarge) mlw(thin) )"'
-    local note `"`note' "Colored markers indicate signifcant Benjamini-Hochberg p-value at FWER {&alpha} = `critical'.""'
+    local note `"`note' "Colored markers indicate significant Benjamini-Hochberg p-value at FDR {&alpha} = `critical'.""'
   }
   else {
     gen sig = "*" if (pvalue <= `critical')
     local bhplot = `"(scatter pos b if sig == "*", ms(O) mlc(black) mfc(red) msize(medlarge) mlw(thin) )"'
-    local note `"`note' "Colored markers indicate signifcant p-value at {&alpha} = `critical'.""'
+    local note `"`note' "Colored markers indicate significant p-value at {&alpha} = `critical'.""'
   }
 
   // Allow family-wise sorting

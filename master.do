@@ -2,17 +2,20 @@
 
 // Set global directory locations
   global rawdata "/Users/bbdaniels/Box/Qutub/MUMBAI/constructed"
-  global directory "/Users/bbdaniels/GitHub/mumbai/mumbai-public"
+  global directory "/Users/bbdaniels/GitHub/mumbai-public"
 
   sysdir set PLUS "${directory}/ado/"
+  sysdir set PERSONAL "${directory}/"
 
   net from "http://www.stata.com/users/vwiggins"
-    net install grc1leg
+    net install grc1leg , replace
 
   net from "https://github.com/bbdaniels/stata/raw/master/"
     net install sumstats , replace
     net install betterbar , replace
     net install forest , replace
+
+  set scheme uncluttered , perm
 
 // Globals
 
