@@ -82,17 +82,21 @@ betterbarci `var' ///
 
     graph export "${git}/outputs/f-convenience.eps" , replace
 
-// SP Satisfaction -----------------------------------------------------------------------------
+// SP Satisfaction -------------------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
-betterbar g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
-  , over(type) n pct barl ci xoverhang xlab(${pct}) ///
-    legend(on region(lc(none)) c(1) size(small)) ysize(6) ylab(,labsize(small))
+replace g11 = g11/10
+  lab var g11 "SP Subjective Rating (10/10 = 100%)"
+
+betterbar g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
+  , over(type) n pct barl ci xoverhang xlab(${pct}) scale(.7) ///
+    legend(on region(lc(none)) symxsize(small) symysize(small) ///
+      pos(12) c(1) size(small)) ysize(6) ylab(,labsize(small))
 
     graph export "${git}/outputs/f-satisfaction.eps" , replace
 
 
-// Big comparison ------------------------------------------------------------------------------
+// Overall regression comparison figures ---------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
 gen private = 1-public
