@@ -1,12 +1,38 @@
+// Data construction for MCGM records
+use "${git}/data/mcgm.dta" , clear
+  drop qutub_id mcgm_opd mcgm_sputum_pct // rubbish
+  
+  foreach var of varlist mcgm* {
+    replace `var' = `var'/9 // Jan - Sept data
+  }
+
+  lab var mcgm_cxr "Ordered CXR for TB"
+  lab var mcgm_cxr_pos "Abnormal CXR results"
+  lab var mcgm_sputum "Ordered AFB smear"
+  lab var mcgm_sputum_pos "AFB-positive results"
+  lab var mcgm_cbnaat "Ordered Xpert MTB/RIF"
+  lab var mcgm_cbnaat_mtb "TB+/MDR- Xpert results"
+  lab var mcgm_cbnaat_rif "TB+/MDR+ Xpert results"
+  
+  lab def sampled 0 "Not Sampled" 1 "Sampled for SPs"
+    lab val sampled sampled
+    
+  // If mcgm_opd is missing, could not match to report
+     
+save "${git}/constructed/mcgm.dta" , replace
+
+-
+
+
 // Data construction for public sector analysis
 
   // Set up private sector data with same cases
-  use "${directory}/data/sp-private.dta" if case == 1 | case == 4, clear
+  use "${git}/data/sp-private.dta" if case == 1 | case == 4, clear
     drop sp2* sp3* sp7* // Drop data from other cases
     tostring form, replace
 
   // Load publis sector data
-  qui append using "${directory}/data/sp-public.dta" , force gen(public)
+  qui append using "${git}/data/sp-public.dta" , force gen(public)
     lab var public "Public Provider"
     label def public 0 "Private" 1 "Public"
     lab val public public
@@ -79,8 +105,8 @@
   order qutub_id case public group, first
 
   // Documentation for final data -- currently set to reset since will make lots of changes
-  iecodebook export using "${directory}/constructed/sp-data.dta" ///
-    , replace text copy trim("${directory}/do/analysis.do")
-    use "${directory}/constructed/sp-data.dta" , clear
+  iecodebook export using "${git}/constructed/sp-data.dta" ///
+    , replace text copy trim("${git}/do/analysis.do")
+    use "${git}/constructed/sp-data.dta" , clear
 
 // End of dofile
