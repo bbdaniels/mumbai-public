@@ -107,8 +107,21 @@ forest reg ///
 , cl(qutub_id) t(private) controls(i.case i.sp_id) d b bh sort(global) ///
   graphopts(ysize(5) ylab(,labsize(vsmall)) ///
     xlab(-2 "2 SD" -1 "1 SD" 0 " " 1 "1 SD" 2 "2 SD") xscale(alt) xoverhang ///
-    xtit(" {&larr} Favors Public   Favors Private {&rarr}",size(small)))
+    xtit(" {&larr} Favors Public Hospitals   Favors Private Sector {&rarr}",size(vsmall)))
 
-  graph export "${git}/outputs/f-comparison.eps" , replace
+  graph export "${git}/outputs/f-comparison-1.eps" , replace
+  
+forest reg ///
+  (ce_2 dr_1 dr_4 re_1 re_3 re_4) ///
+  (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
+  (correct g11 time_waiting p time checklist_n) ///
+  (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+  if type != 2 ///
+, cl(qutub_id) t(private) controls(i.case i.sp_id) d b bh sort(global) ///
+  graphopts(ysize(5) ylab(,labsize(vsmall)) ///
+    xlab(-2 "2 SD" -1 "1 SD" 0 " " 1 "1 SD" 2 "2 SD") xscale(alt) xoverhang ///
+    xtit(" {&larr} Favors Public Dispensaries   Favors Private Sector {&rarr}",size(vsmall)))
+
+  graph export "${git}/outputs/f-comparison-2.eps" , replace
 
 // End of dofile
