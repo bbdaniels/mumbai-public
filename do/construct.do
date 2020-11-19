@@ -18,11 +18,7 @@ use "${git}/data/mcgm.dta" , clear
     lab val sampled sampled
     
   // If mcgm_opd is missing, could not match to report
-     
-save "${git}/constructed/mcgm.dta" , replace
-
--
-
+  save "${git}/constructed/mcgm.dta" , replace
 
 // Data construction for public sector analysis
 
@@ -47,7 +43,7 @@ save "${git}/constructed/mcgm.dta" , replace
     replace cp_4a = 4 if ppia_facility_2 == 0
     replace cp_4a = 5 if ppia_facility_2 == 1
 
-  recode cp_4a (1=1 "Public Dispensary")(2/3 = 2 "Public Hospital")(4/5 = 3 "Private Hospital") ///
+  recode cp_4a (1=1 "Public Dispensary")(2/3 = 2 "Public Hospital")(4/5 = 3 "Private Sector") ///
     , gen(type)
 
     lab var type "Facility Type"
