@@ -43,16 +43,24 @@ sumstats ///
 // Quality differences -------------------------------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
-forv case = 1/2 {
-betterbarci ///
-  ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
-  if case == `case' , over(type) n xoverhang ///
-  legend(on region(lc(none)) c(1) ring(1) pos(6)) xlab(${pct}) pct barl ylab(,labsize(small)) ysize(6)
+  forv case = 1/2 {
+    betterbarci ///
+      correct re_1 re_3 re_4 dr_1 ///
+      dr_4 med_k_any_9 med_l_any_2 med_l_any_3 ///
+    if case == `case' ///
+    , over(type) barlab pct n xoverhang scale(0.7) ///
+      legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small)) ///
+      ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-quality-`case'.gph" , replace) 
+  }
 
-  graph export "${git}/outputs/f-quality-`case'.eps" , replace
-}
+  grc1leg ///
+    "${git}/outputs/f-quality-1.gph" ///
+    "${git}/outputs/f-quality-2.gph" ///
+  , r(1) pos(12)
+  
+    graph export "${git}/outputs/f-quality.eps" , replace
 
-// Price and convenience -----------------------------------------------------------------------
+// Price and convenience -------------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
   local x = 0
@@ -64,7 +72,7 @@ use "${git}/constructed/sp-data.dta" , clear
       
       betterbarci `var' ///
         , over(type) yscale(off) ylab(,labsize(small)) v n `pct' ///
-          barl  nodraw saving("${git}/temp/convenience-`var'.gph" , replace) ///
+          barl nodraw saving("${git}/temp/convenience-`var'.gph" , replace) ///
           legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small))
 
         local graphs `"`graphs' "${git}/temp/convenience-`var'.gph" "'  
