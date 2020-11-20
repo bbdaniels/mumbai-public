@@ -55,30 +55,25 @@ betterbarci ///
 // Price and convenience -----------------------------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
-gen c = correct*100
-  lab var c "Quality (0-100)"
+  local x = 0
+  local pct "pct"
+  foreach var of varlist ///
+    correct med_l_any_2 med_l_any_3 ///
+    time_waiting p time  {
+      local ++x
+      
+      betterbarci `var' ///
+        , over(type) yscale(off) ylab(,labsize(small)) v n `pct' ///
+          barl  nodraw saving("${git}/temp/convenience-`var'.gph" , replace) ///
+          legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small))
 
-local x = 0
-foreach var of varlist c g11 time_waiting p time checklist_n  {
-local ++x
-betterbarci `var' ///
-  , over(type) yscale(off) ylab(,labsize(small)) v n ///
-    barl format(%9.1f) legend(on region(lc(none)) region(lc(none)) r(1) pos(6) ring(1) size(small) symxsize(small) symysize(small))
+        local graphs `"`graphs' "${git}/temp/convenience-`var'.gph" "'  
+        
+      if `x' == 3 local pct "format(%9.1f)"  
+    }
 
-    graph save "${git}/temp/convenience-`x'.gph" , replace
-}
-
-  grc1leg ///
-    "${git}/temp/convenience-1.gph" ///
-    "${git}/temp/convenience-2.gph" ///
-    "${git}/temp/convenience-3.gph" ///
-    "${git}/temp/convenience-4.gph" ///
-    "${git}/temp/convenience-5.gph" ///
-    "${git}/temp/convenience-6.gph" ///
-    , c(2)
-
-    graph save "${git}/temp/convenience.gph" , replace
-    graph combine "${git}/temp/convenience.gph" , ysize(5)
+  grc1leg `graphs' , c(2) pos(12) 
+    graph draw, ysize(5)
 
     graph export "${git}/outputs/f-convenience.eps" , replace
 
