@@ -62,9 +62,11 @@ use "${git}/data/mcgm.dta" , clear
   // Re-generating mixed measures
   replace case = 2 if case == 4
 
-  drop checklist_n
+  drop checklist*
     egen checklist_n = rsum(sp1_h_? sp1_h_?? sp4_h_? sp4_h_??)
     lab var checklist_n "Number of Questions"
+    egen checklist = rmean(sp1_h_? sp1_h_?? sp4_h_? sp4_h_??)
+    lab var checklist "Share of Questions"
 
   drop correct
     gen correct = ///
@@ -73,6 +75,9 @@ use "${git}/data/mcgm.dta" , clear
     )
 			label var correct "Correct Case Management"
 			label val correct yesno
+      
+  gen microbio = (re_3 == 1 | re_4 == 1)
+    lab var microbio "Microbiological Test"
 
   // Recode SP ID
   drop sp_id

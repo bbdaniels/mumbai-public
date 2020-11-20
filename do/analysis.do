@@ -45,10 +45,10 @@ use "${git}/constructed/sp-data.dta" , clear
 
   forv case = 1/2 {
     betterbarci ///
-      correct re_1 re_3 re_4 dr_1 ///
+      correct microbio re_1 re_3 re_4 dr_1 ///
       dr_4 med_k_any_9 med_l_any_2 med_l_any_3 ///
     if case == `case' ///
-    , over(type) barlab pct n xoverhang scale(0.7) ///
+    , over(type) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
       legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small)) ///
       ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-quality-`case'.gph" , replace) 
   }
@@ -66,7 +66,8 @@ use "${git}/constructed/sp-data.dta" , clear
   local x = 0
   local pct "pct"
   foreach var of varlist ///
-    correct med_l_any_2 med_l_any_3 ///
+    correct checklist microbio ///
+    med_l_any_2 med_l_any_3 ///
     time_waiting p time  {
       local ++x
       
@@ -77,7 +78,7 @@ use "${git}/constructed/sp-data.dta" , clear
 
         local graphs `"`graphs' "${git}/temp/convenience-`var'.gph" "'  
         
-      if `x' == 3 local pct "format(%9.1f)"  
+      if `x' == 5 local pct "format(%9.1f)"  
     }
 
   grc1leg `graphs' , c(2) pos(12) 
@@ -130,5 +131,16 @@ forest reg ///
     xtit(" {&larr} Favors Public Dispensaries   Favors Private Sector {&rarr}",size(vsmall)))
 
   graph export "${git}/outputs/f-comparison-2.eps" , replace
+
+// Questions and exams
+
+  ce_1 ce_2 ce_2a ce_3 ce_4 ce_5 ce_6 ce_7 ///
+  sp1_h_1 sp1_h_2 sp1_h_3 sp1_h_4 sp1_h_5 sp1_h_6 sp1_h_7 ///
+  sp1_h_8 sp1_h_9 sp1_h_10 sp1_h_11 sp1_h_12 sp1_h_13 sp1_h_14 ///
+  sp1_h_15 sp1_h_16 sp1_h_17 sp1_h_18 sp1_h_19 sp1_h_20 ///
+  sp4_h_1 sp4_h_2 sp4_h_3 sp4_h_4 sp4_h_5 sp4_h_6 sp4_h_7 sp4_h_8 ///
+  sp4_h_9 sp4_h_10 sp4_h_11 sp4_h_12 sp4_h_13 sp4_h_14 sp4_h_15 sp4_h_16 ///
+  sp4_h_17 sp4_h_18 sp4_h_19 sp4_h_20 sp4_h_21 sp4_h_22 sp4_h_23 sp4_h_24 ///
+  sp4_h_25 sp4_h_26 sp4_h_27 sp4_h_28 sp4_h_29 sp4_h_30
 
 // End of dofile

@@ -4,7 +4,15 @@ Variable      Obs Unique      Mean        Min       Max  Label
 qutub_id      808    366         .          .         .  Facility ID
 case          808      2  1.410891          1         2  Case
 public        808      2  .2029703          0         1  Public Provider
+ce_1          808      2  .4975248          0         1  Pulse
 ce_2          806      2  .8114144          0         1  Auscultation
+ce_2a          72      2  .6527778          0         1  Provider commented on auscultation
+ce_3          807      2  .1623296          0         1  Temperature
+ce_4          808      2  .3428218          0         1  Throat Exam
+ce_5          808      2  .5284653          0         1  Blood Pressure
+ce_6          807      2  .3060719          0         1  Weight
+ce_7          807      2   .267658          0         1  Abdomen palpitation
+checklist     808     71  .3962387          0  .8636364  Share of Questions
 checklist_n   808     25  10.04455          0        25  Number of Questions
 correct       808      2  .6373762          0         1  Correct Case Management
 dr_1          807      2  .5254027          0         1  TB Suspicion
@@ -25,10 +33,61 @@ med_k_any_9   808      2  .0247525          0         1  Steroids
 med_l_any_1   808      2  .0185644          0         1  Started TB Treatment
 med_l_any_2   808      2  .0457921          0         1  Fluoroquinolones
 med_l_any_3   808      2  .6361386          0         1  Other Antibiotic
+microbio      808      2  .4183168          0         1  Microbiological Test
 p             808     50  410.1324          0      2500  Amount Paid (INR)
 re_1          808      2   .825495          0         1  Chest X-Ray
 re_3          805      2  .2906832          0         1  Sputum AFB
 re_4          804      2   .210199          0         1  Xpert MTB/RIF
+sp1_h_1       475      2  .9810526          0         1  Duration of Cough
+sp1_h_2       475      2  .8126316          0         1  Sputum
+sp1_h_3       475      2  .4336842          0         1  Past TB
+sp1_h_4       475      2  .2463158          0         1  Family TB
+sp1_h_5       474      2  .2531646          0         1  Blood in Sputum
+sp1_h_6       475      2  .5431579          0         1  Cough Throughout Day
+sp1_h_7       475      2       .92          0         1  Fever
+sp1_h_8       475      2  .6652632          0         1  Fever Type
+sp1_h_9       476      2  .1197479          0         1  Family or Family with Similar Symptoms
+sp1_h_10      476      2  .3340336          0         1  Chest Pain
+sp1_h_11      476      2  .4852941          0         1  Loss of Appetite
+sp1_h_12      476      2  .4558824          0         1  Lost Weight
+sp1_h_13      476      2  .0210084          0         1  Wheezing
+sp1_h_14      476      2  .2815126          0         1  Difficulty Breathing
+sp1_h_15      476      2  .2205882          0         1  Smoking
+sp1_h_16      476      2   .144958          0         1  Alcohol History
+sp1_h_17      476      2  .6470588          0         1  Taken Medicines for Illness
+sp1_h_18      476      2  .1869748          0         1  Diabetes
+sp1_h_19      476      2  .0210084          0         1  HIV/AIDS
+sp1_h_20      476      2  .8277311          0         1  Age
+sp4_h_1       332      2  .9608434          0         1  Duration of Cough
+sp4_h_2       332      2  .7801205          0         1  Sputum
+sp4_h_3        59      2  .6779661          0         1  Saw Sputum Results
+sp4_h_4       332      2  .2921687          0         1  Medication Taken Last Month for Present Illness
+sp4_h_5       332      2  .3644578          0         1  Visited Governmental Hospital for Previous Illness
+sp4_h_6       332      2  .3704819          0         1  Treatment for Previous Illness
+sp4_h_7       332      2  .3012048          0         1  Sputum or X-Rays Done for Previous Illness
+sp4_h_8       332      2  .4427711          0         1  Diagnosis Given by Governmental Hospital
+sp4_h_9       332      2  .5271084          0         1  Past TB Treatment
+sp4_h_10      332      2  .6054217          0         1  For How Long Past TB Treatment
+sp4_h_11      332      2  .5210843          0         1  Reason for Stopping
+sp4_h_12      332      2  .3463855          0         1  Previous Treatment Medical Records
+sp4_h_13      331      2  .1450151          0         1  Blood in Sputum
+sp4_h_14      331      2  .3806647          0         1  Cough Throughout Day
+sp4_h_15      331      2  .8036254          0         1  Fever
+sp4_h_16      331      2  .4924471          0         1  Fever Type
+sp4_h_17      331      2  .0634441          0         1  Similar Symptoms Before
+sp4_h_18      331      2  .0634441          0         1  Family TB
+sp4_h_19      331      2  .1873112          0         1  Chest Pain
+sp4_h_20      331      2  .4592145          0         1  Loss of Appetite
+sp4_h_21      331      2  .3685801          0         1  Lost Weight
+sp4_h_22      331      2  .0422961          0         1  Wheezing
+sp4_h_23      331      2   .223565          0         1  Difficulty in Breathing
+sp4_h_24      331      2  .2809668          0         1  Smoking
+sp4_h_25      331      2  .1570997          0         1  Alcohol
+sp4_h_26      331      2  .2356495          0         1  Diabetes
+sp4_h_27      331      2  .0030211          0         1  HIV/AIDS
+sp4_h_28      331      2  .1782477          0         1  High Blood Pressure or Hypertension
+sp4_h_29      331      2  .1178248          0         1  Presence of Children
+sp4_h_30      331      2  .7945619          0         1  Age
 sp_id         797     11  6.435383          1        11  group(sp_name)
 time          804    355  4.010572          0  15.33333  Time with Provider (min)
 time_waiting  799    726  61.79091  -12.38333  765.9667  Time Waiting (min)
