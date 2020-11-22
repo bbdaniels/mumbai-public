@@ -82,7 +82,8 @@ use "${git}/constructed/sp-data.dta" , clear
   grc1leg ///
     "${git}/outputs/f-quality-1.gph" ///
     "${git}/outputs/f-quality-2.gph" ///
-  , r(1) pos(12)
+  , r(1) pos(12) imargin(0 0 0 0)
+    graph draw, ysize(5)
   
     graph export "${git}/outputs/f-quality.eps" , replace
 
