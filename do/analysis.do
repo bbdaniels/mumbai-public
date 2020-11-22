@@ -45,8 +45,8 @@ use "${git}/constructed/sp-data.dta" , clear
   foreach var of varlist ///
     correct checklist ///
     microbio time_waiting ///
-    med_l_any_2 time  ///
-    med_l_any_3 p {
+    med_l_any_3 time  ///
+    med_l_any_2 p {
       if inlist("`var'","correct","checklist","microbio","med_l_any_2","med_l_any_3") {
         local pct "pct" 
       }
