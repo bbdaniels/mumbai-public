@@ -35,12 +35,38 @@ use "${git}/constructed/sp-data.dta" , clear
   // Shortcut
   local pq = "`experience' `quality' `satisfaction'"
 
-sumstats ///
-  (`pq') ///
+  sumstats (`pq') ///
   using "${git}/outputs/sp-summary.xlsx" ///
   , stats(mean sd p25 med p75) replace
+  
+// High-level pooled results ---------------------------------------------------
+use "${git}/constructed/sp-data.dta" , clear
 
-// Quality differences -------------------------------------------------------------------------
+  foreach var of varlist ///
+    correct checklist ///
+    microbio time_waiting ///
+    med_l_any_2 time  ///
+    med_l_any_3 p {
+      if inlist("`var'","correct","checklist","microbio","med_l_any_2","med_l_any_3") {
+        local pct "pct" 
+      }
+      else local pct "format(%9.1f)" 
+      
+      betterbarci `var' ///
+        , over(type) yscale(off) ylab(,labsize(small)) v n `pct' ///
+          barl nodraw saving("${git}/temp/convenience-`var'.gph" , replace) ///
+          legend(on region(lc(none)) region(lc(none)) r(1) ///
+            ring(1) size(vsmall) symxsize(small) symysize(small))
+
+        local graphs `"`graphs' "${git}/temp/convenience-`var'.gph" "'      
+    }
+
+  grc1leg `graphs' , c(2) pos(12) 
+    graph draw, ysize(6)
+
+    graph export "${git}/outputs/f-summary.eps" , replace
+
+// Quality outcomes by case ----------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
   forv case = 1/2 {
@@ -59,32 +85,6 @@ use "${git}/constructed/sp-data.dta" , clear
   , r(1) pos(12)
   
     graph export "${git}/outputs/f-quality.eps" , replace
-
-// Price and convenience -------------------------------------------------------
-use "${git}/constructed/sp-data.dta" , clear
-
-  local x = 0
-  local pct "pct"
-  foreach var of varlist ///
-    correct checklist microbio ///
-    med_l_any_2 med_l_any_3 ///
-    time_waiting p time  {
-      local ++x
-      
-      betterbarci `var' ///
-        , over(type) yscale(off) ylab(,labsize(small)) v n `pct' ///
-          barl nodraw saving("${git}/temp/convenience-`var'.gph" , replace) ///
-          legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small))
-
-        local graphs `"`graphs' "${git}/temp/convenience-`var'.gph" "'  
-        
-      if `x' == 5 local pct "format(%9.1f)"  
-    }
-
-  grc1leg `graphs' , c(2) pos(12) 
-    graph draw, ysize(5)
-
-    graph export "${git}/outputs/f-convenience.eps" , replace
 
 // SP Satisfaction -------------------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
