@@ -39,6 +39,29 @@ use "${git}/constructed/sp-data.dta" , clear
   using "${git}/outputs/sp-summary.xlsx" ///
   , stats(mean sd p25 med p75) replace
   
+// Big regression table
+use "${git}/constructed/sp-data.dta" , clear
+
+  fvset base 3 type
+    
+  cap mat drop results
+  foreach var of varlist ///
+    dr_1 dr_4 re_1 re_3 re_4 ///
+    med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
+    correct g11 time_waiting p time checklist_n ///
+    g1 g2 g3 g4 g5 g6 g7 g8 g9 g10 {
+      reg `var' i..type i.case i.sp_id , cl(qutub_id)
+      mat temp = r(table)[1..6,1..2]
+      mat temp = temp'
+        mat rownames temp = "`var'_disp" "`var'_hosp"
+      mat results = nullmat(results) ///
+        \ temp
+  }
+  
+  putexcel set "${git}/outputs/t-regression.xlsx" , replace
+  putexcel A1 = matrix(results) , nformat(0.00) names
+  putexcel save
+  
 // High-level pooled results ---------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
@@ -108,28 +131,28 @@ gen private = 1-public
   lab var private "Private Sector"
 
 forest reg ///
-  (ce_2 dr_1 dr_4 re_1 re_3 re_4) ///
+  (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
   (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
-  (correct g11 time_waiting p time checklist_n) ///
-  (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+  (g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+  (time_waiting p time) ///
   if type > 1 ///
 , cl(qutub_id) t(private) controls(i.case i.sp_id) d b bh sort(global) ///
-  graphopts(ysize(5) ylab(,labsize(vsmall)) ///
-    xlab(-2 "2 SD" -1 "1 SD" 0 " " 1 "1 SD" 2 "2 SD") xscale(alt) xoverhang ///
-    xtit(" {&larr} Favors Public Hospitals   Favors Private Sector {&rarr}",size(vsmall)))
+  graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+    xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
+    xtit(" {&larr} Favors Public Hospitals   Favors Private Sector {&rarr}"))
 
   graph export "${git}/outputs/f-comparison-1.eps" , replace
   
 forest reg ///
-  (ce_2 dr_1 dr_4 re_1 re_3 re_4) ///
+  (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
   (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
-  (correct g11 time_waiting p time checklist_n) ///
-  (g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+  (g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+  (time_waiting p time) ///
   if type != 2 ///
 , cl(qutub_id) t(private) controls(i.case i.sp_id) d b bh sort(global) ///
-  graphopts(ysize(5) ylab(,labsize(vsmall)) ///
-    xlab(-2 "2 SD" -1 "1 SD" 0 " " 1 "1 SD" 2 "2 SD") xscale(alt) xoverhang ///
-    xtit(" {&larr} Favors Public Dispensaries   Favors Private Sector {&rarr}",size(vsmall)))
+  graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+    xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
+    xtit(" {&larr} Favors Public Dispensaries   Favors Private Sector {&rarr}"))
 
   graph export "${git}/outputs/f-comparison-2.eps" , replace
 
