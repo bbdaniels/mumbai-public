@@ -25,14 +25,15 @@ use "${git}/constructed/mcgm-ts.dta" , clear
 
 // Summary statistics --------------------------------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
+  keep if public == 1
 
   sumstats ///
     (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
     (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
     (g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
     (time_waiting p time) ///
-  using "${git}/outputs/sp-summary.xlsx" ///
-  , stats(mean sd p25 med p75) replace
+  using "${git}/outputs/t-summary.xlsx" ///
+  , stats(mean sd N) replace
   
 // Big regression table
 use "${git}/constructed/sp-data.dta" , clear
@@ -43,16 +44,16 @@ use "${git}/constructed/sp-data.dta" , clear
   local i = 1
   cap mat drop results
   qui foreach var of varlist ///
-    dr_1 dr_4 re_1 re_3 re_4 ///
+    correct checklist microbio re_1 re_3 re_4 dr_1 dr_4 ///
     med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9 ///
-    correct g11 time_waiting p time checklist_n ///
-    g1 g2 g3 g4 g5 g6 g7 g8 g9 g10 {
+    g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10 ///
+    time_waiting p time {
       local label : var lab `var'
       
       local ++i
-      putexcel A`i' = "`label': Public Hospitals"
-      local ++i
       putexcel A`i' = "`label': Public Dispensaries"
+      local ++i
+      putexcel A`i' = "`label': Public Hospitals"
       
       reg `var' i..type i.case i.sp_id , cl(qutub_id)
       mat temp = r(table)[1..6,1..2]
