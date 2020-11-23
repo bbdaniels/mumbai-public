@@ -26,16 +26,11 @@ use "${git}/constructed/mcgm-ts.dta" , clear
 // Summary statistics --------------------------------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
-  // Process measures
-  local experience = "correct g11 time_waiting p time checklist_n"
-  // Quality measures
-  local quality = "ce_2 dr_1 dr_4 re_1 re_3 re_4 med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9"
-  // Satisfaction
-  local satisfaction = "g1 g2 g3 g4 g5 g6 g7 g8 g9 g10"
-  // Shortcut
-  local pq = "`experience' `quality' `satisfaction'"
-
-  sumstats (`pq') ///
+  sumstats ///
+    (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
+    (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
+    (g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+    (time_waiting p time) ///
   using "${git}/outputs/sp-summary.xlsx" ///
   , stats(mean sd p25 med p75) replace
   
