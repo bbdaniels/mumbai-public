@@ -14,6 +14,9 @@
     net install sumstats , replace
     net install betterbar , replace
     net install forest , replace
+    
+  copy "https://github.com/graykimbrough/uncluttered-stata-graphs/raw/master/schemes/scheme-uncluttered.scheme" ///
+    "${git}/scheme-uncluttered.scheme" , replace
 
   set scheme uncluttered , perm
   graph set eps fontface "Helvetica"
