@@ -256,8 +256,6 @@ use "${git}/constructed/sp-data.dta" , clear
       graph save "${git}/outputs/f-specialist-24-`case'.gph" , replace
   }
 
-
-      
   graph combine ///
     "${git}/outputs/f-specialist-1.gph" ///
     "${git}/outputs/f-specialist-2.gph" ///
@@ -282,5 +280,46 @@ use "${git}/constructed/sp-data.dta" , clear
   , ysize(5) altshrink
 
     graph export "${git}/outputs/fa-specialist-y.eps" , replace
+    
+// Waiting times and open hours
+
+  use "${git}/constructed/sp-data.dta" , clear 
+    replace type = 4 if specialist == 1
+      lab def type 4 "MBBS+MD" , add
+  
+  tw histogram time_in if public == 1 ///
+  , title("Appointment Time: Public Sector") xtit(" ") width(`=60*30*1000') start(`=60*60*1000*6') ///
+    xlab(`=60*60*1000*6' `=60*60*1000*12' `=60*60*1000*18' `=60*60*1000*23') ///
+    ${graph_opts} frac lc(black) fc(gs14) gap(10) xoverhang ///
+    ytit("Share of Interactions") ylab(0 "0%" .05 "5%" .1 "10%" .15 "15%" .2 "20%")
+    
+    graph save "${git}/outputs/time-pub.gph" , replace
+    
+  tw histogram time_in if public == 0 ///
+  , title("Appointment Time: Private Sector") xtit(" ") width(`=60*30*1000') start(`=60*60*1000*6') ///
+    xlab(`=60*60*1000*6' `=60*60*1000*12' `=60*60*1000*18' `=60*60*1000*23') ///
+    ${graph_opts} frac lc(black) fc(gs14) gap(10) xoverhang ///
+    ytit("Share of Interactions") ylab(0 "0%" .05 "5%" .1 "10%" .15 "15%" .2 "20%")
+    
+    graph save "${git}/outputs/time-pri.gph" , replace
+    
+  graph hbox time_waiting, over(type) noout ///
+    ytit(" ") title("Time Waiting (min)") note(" ") asy legend(on)
+    graph save "${git}/outputs/time-wait.gph" , replace
+  graph hbox time, over(type) noout ///
+    ytit(" ") title("Time With Provider (min)") note(" ") asy legend(on)
+    graph save "${git}/outputs/time-with.gph" , replace
+  
+  graph combine ///
+    "${git}/outputs/time-pub.gph" ///
+    "${git}/outputs/time-wait.gph" ///
+    "${git}/outputs/time-pri.gph" ///
+    "${git}/outputs/time-with.gph" ///
+    , altshrink
+    
+    graph export "${git}/outputs/time.eps" , replace
+    
+
+
 
 // End of dofile
