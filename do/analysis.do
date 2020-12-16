@@ -187,4 +187,84 @@ forest reg ///
 
   graph export "${git}/outputs/f-comparison-2.eps" , replace
 
+// Appendix materials: Private specialist provider comparison
+use "${git}/constructed/sp-data.dta" , clear 
+  
+  gen private = 1-public
+  replace type = 4 if specialist == 1
+    lab def type 4 "MBBS+MD" , add
+
+  forv case = 1/2 {
+    betterbarci ///
+      correct microbio re_1 re_3 re_4 dr_1 ///
+      dr_4 med_k_any_9 med_l_any_2 med_l_any_3 ///
+    if case == `case' ///
+    , over(type) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
+      legend(on region(lc(none)) region(lc(none)) c(1) ring(1) size(small) symxsize(small) symysize(small)) ///
+      ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-specialist-`case'.gph" , replace) 
+      
+    forest reg ///
+      (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
+      (med_l_any_2 med_l_any_3 med_k_any_9) ///
+      (g11 g1 g2 g4 g5 g6 g7 g8 g9 g10) ///
+      (time_waiting p time) ///
+      if case == `case' & type != 4 & type != 2 ///
+    , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+        xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
+        xtit(" {&larr} Favors Public Dispensaries    Favors Private non-MD Providers {&rarr}"))
+        
+      graph save "${git}/outputs/f-specialist-13-`case'.gph" , replace
+      
+    forest reg ///
+      (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
+      (med_l_any_2 med_l_any_3 med_k_any_9) ///
+      (g11 g1 g2 g4 g5 g6 g7 g8 g9 g10) ///
+      (time_waiting p time) ///
+      if case == `case' & type != 4 & type != 1 ///
+    , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+        xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
+        xtit(" {&larr} Favors Public Hospitals    Favors Private non-MD Providers {&rarr}"))
+        
+      graph save "${git}/outputs/f-specialist-23-`case'.gph" , replace
+      
+    forest reg ///
+      (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
+      (med_l_any_2 med_l_any_3 med_k_any_9) ///
+      (g11 g1 g2 g4 g5 g6 g7 g8 g9 g10) ///
+      (time_waiting p time) ///
+      if case == `case' & type != 3 & type != 2 ///
+    , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+        xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
+        xtit(" {&larr} Favors Public Dispensaries    Favors Private MBBS+MD Providers {&rarr}"))
+        
+      graph save "${git}/outputs/f-specialist-14-`case'.gph" , replace
+      
+    forest reg ///
+      (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
+      (med_l_any_2 med_l_any_3 med_k_any_9) ///
+      (g11 g1 g2 g4 g5 g6 g7 g8 g9 g10) ///
+      (time_waiting p time) ///
+      if case == `case' & type != 3 & type != 1 ///
+    , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+        xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
+        xtit(" {&larr} Favors Public Hospitals    Favors Private MBBS+MD Providers {&rarr}"))
+        
+      graph save "${git}/outputs/f-specialist-24-`case'.gph" , replace
+  }
+
+
+      
+      graph combine ///
+        "${git}/outputs/f-specialist-1.gph" ///
+        "${git}/outputs/f-specialist-reg-1.gph" ///
+        "${git}/outputs/f-specialist-2.gph" ///
+        "${git}/outputs/f-specialist-reg-2.gph" ///
+      , ysize(8) altshrink
+
+
+
 // End of dofile

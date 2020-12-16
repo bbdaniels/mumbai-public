@@ -27,7 +27,7 @@ use "${git}/data/mcgm.dta" , clear
     drop sp2* sp3* sp7* // Drop data from other cases
     tostring form, replace
 
-  // Load publis sector data
+  // Load public sector data
   qui append using "${git}/data/sp-public.dta" , force gen(public)
     lab var public "Public Provider"
     label def public 0 "Private" 1 "Public"
@@ -38,17 +38,22 @@ use "${git}/data/mcgm.dta" , clear
     lab var group "Analysis Group"
     lab def group 1 "Non-PPIA" 2 "Public" 3 "PPIA"
     lab val group group
+		
+		gen specialist = cp_5 == 9 if public == 0
+		  lab var specialist "MBBS+MD Provider"
+			lab def specialist 1 "MBBS+MD Provider" 0 "Other"
+			lab val specialist specialist
 
-  label def cp_4a 4 "Private" 5 "Private PPIA" , modify
-    replace cp_4a = 4 if ppia_facility_2 == 0
-    replace cp_4a = 5 if ppia_facility_2 == 1
+	  label def cp_4a 4 "Private" 5 "Private PPIA" , modify
+	    replace cp_4a = 4 if ppia_facility_2 == 0
+	    replace cp_4a = 5 if ppia_facility_2 == 1
 
-  recode cp_4a (1=1 "Public Dispensary")(2/3 = 2 "Public Hospital")(4/5 = 3 "Private Sector") ///
-    , gen(type)
+	  recode cp_4a (1=1 "Public Dispensary")(2/3 = 2 "Public Hospital")(4/5 = 3 "Private Sector") ///
+	    , gen(type)
 
-    lab var type "Facility Type"
+	    lab var type "Facility Type"
 
-    drop cp_4a
+	    drop cp_4a
 
   // Recoding quality
   foreach var in g1 g2 g3 g4 g5  {
@@ -106,7 +111,7 @@ use "${git}/data/mcgm.dta" , clear
   order qutub_id case public group, first
 
   // Documentation for final data -- currently set to reset since will make lots of changes
-  iecodebook export using "${git}/constructed/sp-data.dta" ///
+  iecodebook export using "${git}/constructed/sp-data.xlsx" ///
     , replace text copy trim("${git}/do/analysis.do")
     use "${git}/constructed/sp-data.dta" , clear
 
