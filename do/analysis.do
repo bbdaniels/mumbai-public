@@ -210,7 +210,7 @@ use "${git}/constructed/sp-data.dta" , clear
       (time_waiting p time) ///
       if case == `case' & type != 4 & type != 2 ///
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
-      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Dispensaries    Favors Private non-MD Providers {&rarr}"))
         
@@ -223,7 +223,7 @@ use "${git}/constructed/sp-data.dta" , clear
       (time_waiting p time) ///
       if case == `case' & type != 4 & type != 1 ///
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
-      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Hospitals    Favors Private non-MD Providers {&rarr}"))
         
@@ -236,7 +236,7 @@ use "${git}/constructed/sp-data.dta" , clear
       (time_waiting p time) ///
       if case == `case' & type != 3 & type != 2 ///
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
-      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Dispensaries    Favors Private MBBS+MD Providers {&rarr}"))
         
@@ -249,7 +249,7 @@ use "${git}/constructed/sp-data.dta" , clear
       (time_waiting p time) ///
       if case == `case' & type != 3 & type != 1 ///
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
-      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) ///
+      graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Hospitals    Favors Private MBBS+MD Providers {&rarr}"))
         
@@ -258,13 +258,29 @@ use "${git}/constructed/sp-data.dta" , clear
 
 
       
-      graph combine ///
-        "${git}/outputs/f-specialist-1.gph" ///
-        "${git}/outputs/f-specialist-reg-1.gph" ///
-        "${git}/outputs/f-specialist-2.gph" ///
-        "${git}/outputs/f-specialist-reg-2.gph" ///
-      , ysize(8) altshrink
+  graph combine ///
+    "${git}/outputs/f-specialist-1.gph" ///
+    "${git}/outputs/f-specialist-2.gph" ///
+  , ysize(5) 
+  
+    graph export "${git}/outputs/fa-specialist-12.eps" , replace
 
+  graph combine ///
+    "${git}/outputs/f-specialist-13-1.gph" ///
+    "${git}/outputs/f-specialist-13-2.gph" ///
+    "${git}/outputs/f-specialist-23-1.gph" ///
+    "${git}/outputs/f-specialist-23-2.gph" ///
+  , ysize(5) altshrink
 
+    graph export "${git}/outputs/fa-specialist-n.eps" , replace
+    
+  graph combine ///
+    "${git}/outputs/f-specialist-14-1.gph" ///
+    "${git}/outputs/f-specialist-14-2.gph" ///
+    "${git}/outputs/f-specialist-24-1.gph" ///
+    "${git}/outputs/f-specialist-24-2.gph" ///
+  , ysize(5) altshrink
+
+    graph export "${git}/outputs/fa-specialist-y.eps" , replace
 
 // End of dofile
