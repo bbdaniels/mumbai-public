@@ -98,10 +98,11 @@ use "${git}/constructed/sp-data.dta" , clear
 
   foreach var of varlist ///
     correct checklist ///
+    re_1 re_4 ///
     microbio time_waiting ///
     med_l_any_3 time  ///
     med_l_any_2 p {
-      if inlist("`var'","correct","checklist","microbio","med_l_any_2","med_l_any_3") {
+      if inlist("`var'","correct","checklist","re_1","re_4","microbio","med_l_any_2","med_l_any_3") {
         local pct "pct" 
       }
       else local pct "format(%9.1f)" 
