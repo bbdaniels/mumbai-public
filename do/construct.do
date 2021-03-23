@@ -38,22 +38,22 @@ use "${git}/data/mcgm.dta" , clear
     lab var group "Analysis Group"
     lab def group 1 "Non-PPIA" 2 "Public" 3 "PPIA"
     lab val group group
-		
-		gen specialist = cp_5 == 9 if public == 0
-		  lab var specialist "MBBS+MD Provider"
-			lab def specialist 1 "MBBS+MD Provider" 0 "Other"
-			lab val specialist specialist
+    
+    gen specialist = cp_5 == 9 if public == 0
+      lab var specialist "MBBS+MD Provider"
+      lab def specialist 1 "MBBS+MD Provider" 0 "Other"
+      lab val specialist specialist
 
-	  label def cp_4a 4 "Private" 5 "Private PPIA" , modify
-	    replace cp_4a = 4 if ppia_facility_2 == 0
-	    replace cp_4a = 5 if ppia_facility_2 == 1
+    label def cp_4a 4 "Private" 5 "Private PPIA" , modify
+      replace cp_4a = 4 if ppia_facility_2 == 0
+      replace cp_4a = 5 if ppia_facility_2 == 1
 
-	  recode cp_4a (1=1 "Public Dispensary")(2/3 = 2 "Public Hospital")(4/5 = 3 "Private Sector") ///
-	    , gen(type)
+    recode cp_4a (1=1 "Public Dispensary")(2/3 = 2 "Public Hospital")(4/5 = 3 "Private Sector") ///
+      , gen(type)
 
-	    lab var type "Facility Type"
+      lab var type "Facility Type"
 
-	    drop cp_4a
+      drop cp_4a
 
   // Recoding quality
   foreach var in g1 g2 g3 g4 g5  {
@@ -75,14 +75,14 @@ use "${git}/data/mcgm.dta" , clear
 
   drop correct
     gen correct = ///
-    ( ((dr_4  == 1 | re_1 == 1 | re_3 == 1 | re_4 == 1 | re_5 == 1) 		& case == 1) ///
-    | ((dr_4  == 1 |                         re_4 == 1 | re_5 == 1) 		& case == 2) ///
+    ( ((dr_4  == 1 | re_1 == 1 | re_3 == 1 | re_4 == 1 | re_5 == 1)     & case == 1) ///
+    | ((dr_4  == 1 |                         re_4 == 1 | re_5 == 1)     & case == 2) ///
     )
-			label var correct "Correct Case Management"
-			label val correct yesno
+      label var correct "Correct Case Management"
+      label val correct yesno
       
-  gen microbio = (re_3 == 1 | re_4 == 1)
-    lab var microbio "Microbiological Test"
+  gen microbio = (re_3 == 1 | re_4 == 1 | re_5 == 1)
+    lab var microbio "MCGM Protocol"
 
   // Recode SP ID
   drop sp_id
@@ -92,6 +92,7 @@ use "${git}/data/mcgm.dta" , clear
   lab var dr_4 "Referred Away"
   lab var re_4 "Xpert MTB/RIF"
   lab var p "Amount Paid (INR)"
+  lab var re_5 "Sputum Culture"
 
   lab var g1 "Provider Used Cell Phone"
   lab var g2 "Other People Were In Room"

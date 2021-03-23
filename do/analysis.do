@@ -120,6 +120,27 @@ use "${git}/constructed/sp-data.dta" , clear
     graph draw, ysize(6)
 
     graph export "${git}/outputs/f-summary.eps" , replace
+    
+// Unpooled testing by sector ----------------------------------------------------
+use "${git}/constructed/sp-data.dta" , clear
+
+  forv case = 1/2 {
+    betterbarci ///
+      re_5 re_4 re_3 microbio re_1 ///
+    if case == `case' ///
+    , v over(public) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
+      barcolor(gs6 gs12) ///
+      legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small)) ///
+      ysize(6) ylab(${pct}) nodraw saving("${git}/outputs/f-testing-`case'.gph" , replace) 
+  }
+
+  grc1leg ///
+    "${git}/outputs/f-testing-1.gph" ///
+    "${git}/outputs/f-testing-2.gph" ///
+  , c(1) pos(12) imargin(0 0 0 0)
+    graph draw, ysize(5)
+  
+    graph export "${git}/outputs/f-testing.eps" , replace
 
 // Quality outcomes by case ----------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
