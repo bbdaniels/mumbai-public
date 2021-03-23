@@ -14,7 +14,7 @@
     net install sumstats , replace
     net install betterbar , replace
     net install forest , replace
-    
+
   copy "https://github.com/graykimbrough/uncluttered-stata-graphs/raw/master/schemes/scheme-uncluttered.scheme" ///
     "${git}/scheme-uncluttered.scheme" , replace
 
@@ -48,29 +48,11 @@
   global numbering `""(1)" "(2)" "(3)" "(4)" "(5)" "(6)" "(7)" "(8)" "(9)" "(10)""'
   global bar lc(white) lw(thin) la(center) fi(100) // ← Remove la(center) for Stata < 15
 
--
-// Part 1: Load datafiles into Git location
+// Part 1: Build constructed data from raw data
 
-  // Hashdata command to import data from remote repository
-  qui run "${git}/ado/hashdata/hashdata.ado"
+  // do "${git}/do/construct.do" // For reference only since raw data is PII
 
-  hashdata "${box}/sp-wave-2.dta" ///
-     using "${git}/data/sp-private.dta" , replace
-
-  hashdata "${box}/sp-mcgm.dta" ///
-     using "${git}/data/sp-public.dta" , replace
-
-  hashdata "${box}/mcgm.dta" ///
-    using "${git}/data/mcgm.dta" , replace
-
-  hashdata "${box}/mcgm-ts.dta" ///
-    using "${git}/data/mcgm-ts.dta" , replace
-
-// Part 2: Build constructed data from raw data
-
-  do "${git}/do/construct.do"
-
-// Part 3: Analysis
+// Part 2: Analysis
 
   do "${git}/do/analysis.do"
 

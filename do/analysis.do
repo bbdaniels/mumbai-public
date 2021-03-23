@@ -7,7 +7,7 @@ use "${git}/constructed/mcgm.dta" , clear
   , over(sampled) legend(on region(lc(none)) c(1) pos(4) ring(0) size(small) textfirst symxsize(small)) ///
     xtit("Monthly patients per dispensary {&rarr}") ///
     n ci barl xoverhang format(%9.1f) barcolor(red gs4)
-      
+
   graph export "${git}/outputs/f-balance.eps" , replace
 
 // Time trends -------------------------------------------------------------------------------
@@ -34,13 +34,13 @@ use "${git}/constructed/sp-data.dta" , clear
     (time_waiting p time) ///
   using "${git}/outputs/t-summary.xlsx" ///
   , stats(mean sd N) replace
-  
+
 // Big regression table
 use "${git}/constructed/sp-data.dta" , clear
 
   fvset base 3 type
   putexcel set "${git}/outputs/t-regression.xlsx" , replace
-    
+
   local i = 1
   cap mat drop results
   qui foreach var of varlist ///
@@ -49,27 +49,27 @@ use "${git}/constructed/sp-data.dta" , clear
     g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10 ///
     time_waiting p time {
       local label : var lab `var'
-      
+
       local ++i
       putexcel A`i' = "`label': Public Dispensaries"
       local ++i
       putexcel A`i' = "`label': Public Hospitals"
-      
+
       reg `var' i..type i.case i.sp_id , cl(qutub_id)
       mat temp = r(table)[1..6,1..2]
       mat temp = temp'
       mat results = nullmat(results) ///
         \ temp
   }
-  
+
   putexcel B1 = matrix(results) , nformat(0.000) colnames
   putexcel save
-  
+
 // Questions and exams
 use "${git}/constructed/sp-data.dta" , clear
 
   putexcel set "${git}/outputs/t-checklist.xlsx" , replace
-  
+
   local i = 1
   cap mat drop results
   qui foreach var of varlist ///
@@ -90,9 +90,9 @@ use "${git}/constructed/sp-data.dta" , clear
           putexcel B`i' = matrix(e(b)) , nformat(0.000)
 
     }
-    
+
   putexcel save
-  
+
 // High-level pooled results ---------------------------------------------------
 use "${git}/constructed/sp-data.dta" , clear
 
@@ -103,20 +103,20 @@ use "${git}/constructed/sp-data.dta" , clear
     med_l_any_3 time  ///
     med_l_any_2 p {
       if inlist("`var'","correct","checklist","re_1","re_4","microbio","med_l_any_2","med_l_any_3") {
-        local pct "pct" 
+        local pct "pct"
       }
-      else local pct "format(%9.1f)" 
-      
+      else local pct "format(%9.1f)"
+
       betterbarci `var' ///
         , over(type) yscale(off) ylab(,labsize(small)) v n `pct' ///
           barl nodraw saving("${git}/temp/convenience-`var'.gph" , replace) ///
           legend(on region(lc(none)) region(lc(none)) r(1) ///
             ring(1) size(vsmall) symxsize(small) symysize(small))
 
-        local graphs `"`graphs' "${git}/temp/convenience-`var'.gph" "'      
+        local graphs `"`graphs' "${git}/temp/convenience-`var'.gph" "'
     }
 
-  grc1leg `graphs' , c(2) pos(12) 
+  grc1leg `graphs' , c(2) pos(12)
     graph draw, ysize(6)
 
     graph export "${git}/outputs/f-summary.eps" , replace
@@ -152,7 +152,7 @@ use "${git}/constructed/sp-data.dta" , clear
     if case == `case' ///
     , over(type) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
       legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small)) ///
-      ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-quality-`case'.gph" , replace) 
+      ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-quality-`case'.gph" , replace)
   }
 
   grc1leg ///
@@ -160,7 +160,7 @@ use "${git}/constructed/sp-data.dta" , clear
     "${git}/outputs/f-quality-2.gph" ///
   , r(1) pos(12) imargin(0 0 0 0)
     graph draw, ysize(5)
-  
+
     graph export "${git}/outputs/f-quality.eps" , replace
 
 // SP Satisfaction -------------------------------------------------------------
@@ -195,7 +195,7 @@ forest reg ///
     xtit(" {&larr} Favors Public Hospitals   Favors Private Sector {&rarr}"))
 
   graph export "${git}/outputs/f-comparison-1.eps" , replace
-  
+
 forest reg ///
   (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
   (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
@@ -210,8 +210,8 @@ forest reg ///
   graph export "${git}/outputs/f-comparison-2.eps" , replace
 
 // Appendix materials: Private specialist provider comparison
-use "${git}/constructed/sp-data.dta" , clear 
-  
+use "${git}/constructed/sp-data.dta" , clear
+
   gen private = 1-public
   replace type = 4 if specialist == 1
     lab def type 4 "MBBS+MD" , add
@@ -223,8 +223,8 @@ use "${git}/constructed/sp-data.dta" , clear
     if case == `case' ///
     , over(type) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
       legend(on region(lc(none)) region(lc(none)) c(1) ring(1) size(small) symxsize(small) symysize(small)) ///
-      ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-specialist-`case'.gph" , replace) 
-      
+      ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-specialist-`case'.gph" , replace)
+
     forest reg ///
       (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
       (med_l_any_2 med_l_any_3 med_k_any_9) ///
@@ -235,9 +235,9 @@ use "${git}/constructed/sp-data.dta" , clear
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Dispensaries    Favors Private non-MD Providers {&rarr}"))
-        
+
       graph save "${git}/outputs/f-specialist-13-`case'.gph" , replace
-      
+
     forest reg ///
       (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
       (med_l_any_2 med_l_any_3 med_k_any_9) ///
@@ -248,9 +248,9 @@ use "${git}/constructed/sp-data.dta" , clear
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Hospitals    Favors Private non-MD Providers {&rarr}"))
-        
+
       graph save "${git}/outputs/f-specialist-23-`case'.gph" , replace
-      
+
     forest reg ///
       (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
       (med_l_any_2 med_l_any_3 med_k_any_9) ///
@@ -261,9 +261,9 @@ use "${git}/constructed/sp-data.dta" , clear
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Dispensaries    Favors Private MBBS+MD Providers {&rarr}"))
-        
+
       graph save "${git}/outputs/f-specialist-14-`case'.gph" , replace
-      
+
     forest reg ///
       (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
       (med_l_any_2 med_l_any_3 med_k_any_9) ///
@@ -274,15 +274,15 @@ use "${git}/constructed/sp-data.dta" , clear
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
         xtit(" {&larr} Favors Public Hospitals    Favors Private MBBS+MD Providers {&rarr}"))
-        
+
       graph save "${git}/outputs/f-specialist-24-`case'.gph" , replace
   }
 
   graph combine ///
     "${git}/outputs/f-specialist-1.gph" ///
     "${git}/outputs/f-specialist-2.gph" ///
-  , ysize(5) 
-  
+  , ysize(5)
+
     graph export "${git}/outputs/fa-specialist-12.eps" , replace
 
   graph combine ///
@@ -293,7 +293,7 @@ use "${git}/constructed/sp-data.dta" , clear
   , ysize(5) altshrink
 
     graph export "${git}/outputs/fa-specialist-n.eps" , replace
-    
+
   graph combine ///
     "${git}/outputs/f-specialist-14-1.gph" ///
     "${git}/outputs/f-specialist-14-2.gph" ///
@@ -302,45 +302,45 @@ use "${git}/constructed/sp-data.dta" , clear
   , ysize(5) altshrink
 
     graph export "${git}/outputs/fa-specialist-y.eps" , replace
-    
+
 // Waiting times and open hours
 
-  use "${git}/constructed/sp-data.dta" , clear 
+  use "${git}/constructed/sp-data.dta" , clear
     replace type = 4 if specialist == 1
       lab def type 4 "MBBS+MD" , add
-  
+
   tw histogram time_in if public == 1 ///
   , title("Appointment Time: Public Sector") xtit(" ") width(`=60*30*1000') start(`=60*60*1000*6') ///
     xlab(`=60*60*1000*6' `=60*60*1000*12' `=60*60*1000*18' `=60*60*1000*23') ///
     ${graph_opts} frac lc(black) fc(gs14) gap(10) xoverhang ///
     ytit("Share of Interactions") ylab(0 "0%" .05 "5%" .1 "10%" .15 "15%" .2 "20%")
-    
+
     graph save "${git}/outputs/time-pub.gph" , replace
-    
+
   tw histogram time_in if public == 0 ///
   , title("Appointment Time: Private Sector") xtit(" ") width(`=60*30*1000') start(`=60*60*1000*6') ///
     xlab(`=60*60*1000*6' `=60*60*1000*12' `=60*60*1000*18' `=60*60*1000*23') ///
     ${graph_opts} frac lc(black) fc(gs14) gap(10) xoverhang ///
     ytit("Share of Interactions") ylab(0 "0%" .05 "5%" .1 "10%" .15 "15%" .2 "20%")
-    
+
     graph save "${git}/outputs/time-pri.gph" , replace
-    
+
   graph hbox time_waiting, over(type) noout ///
     ytit(" ") title("Time Waiting (min)") note(" ") asy legend(on)
     graph save "${git}/outputs/time-wait.gph" , replace
   graph hbox time, over(type) noout ///
     ytit(" ") title("Time With Provider (min)") note(" ") asy legend(on)
     graph save "${git}/outputs/time-with.gph" , replace
-  
+
   graph combine ///
     "${git}/outputs/time-pub.gph" ///
     "${git}/outputs/time-wait.gph" ///
     "${git}/outputs/time-pri.gph" ///
     "${git}/outputs/time-with.gph" ///
     , altshrink
-    
+
     graph export "${git}/outputs/time.eps" , replace
-    
+
 
 
 

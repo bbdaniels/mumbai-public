@@ -1,4 +1,7 @@
 // Data construction for MCGM records
+use "${git}/data/mcgm-ts.dta" , clear
+save "${git}/constructed/mcgm-ts.dta" , replace
+
 use "${git}/data/mcgm.dta" , clear
   drop qutub_id mcgm_opd mcgm_sputum_pct // rubbish
   
@@ -13,10 +16,10 @@ use "${git}/data/mcgm.dta" , clear
   lab var mcgm_cbnaat "Ordered Xpert MTB/RIF"
   lab var mcgm_cbnaat_mtb "TB+/MDR- Xpert results"
   lab var mcgm_cbnaat_rif "TB+/MDR+ Xpert results"
-  
+
   lab def sampled 0 "Not Sampled" 1 "Sampled for SPs"
     lab val sampled sampled
-    
+
   // If mcgm_opd is missing, could not match to report
   save "${git}/constructed/mcgm.dta" , replace
 
