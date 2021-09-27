@@ -86,6 +86,7 @@ use "${git}/data/mcgm.dta" , clear
       
   gen microbio = (re_3 == 1 | re_4 == 1 | re_5 == 1)
     lab var microbio "MCGM Protocol"
+    lab var correct "STCI Management"
 
   // Recode SP ID
   drop sp_id

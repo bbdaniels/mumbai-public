@@ -97,9 +97,9 @@ use "${git}/constructed/sp-data.dta" , clear
 use "${git}/constructed/sp-data.dta" , clear
 
   foreach var of varlist ///
-    correct checklist ///
+    correct microbio  ///
     re_1 re_4 ///
-    microbio time_waiting ///
+    time_waiting checklist ///
     med_l_any_3 time  ///
     med_l_any_2 p {
       if inlist("`var'","correct","checklist","re_1","re_4","microbio","med_l_any_2","med_l_any_3") {
@@ -126,7 +126,7 @@ use "${git}/constructed/sp-data.dta" , clear
 
   forv case = 1/2 {
     betterbarci ///
-      re_5 re_4 re_3 microbio re_1 ///
+      re_5 re_4 re_3 re_1 microbio correct ///
     if case == `case' ///
     , v over(public) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
       barcolor(gs6 gs12) ///
@@ -138,7 +138,7 @@ use "${git}/constructed/sp-data.dta" , clear
     "${git}/outputs/f-testing-1.gph" ///
     "${git}/outputs/f-testing-2.gph" ///
   , c(1) pos(12) imargin(0 0 0 0)
-    graph draw, ysize(5)
+    graph draw, xsize(5)
   
     graph export "${git}/outputs/f-testing.eps" , replace
 
