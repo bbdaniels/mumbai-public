@@ -85,7 +85,7 @@ use "${git}/data/mcgm.dta" , clear
       label val correct yesno
       
   gen microbio = (re_3 == 1 | re_4 == 1 | re_5 == 1)
-    lab var microbio "MCGM Protocol"
+    lab var microbio "RNTCP Guidelines"
     lab var correct "STCI Management"
 
   // Recode SP ID

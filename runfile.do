@@ -50,7 +50,7 @@
 
 // Part 1: Build constructed data from raw data
 
-  // do "${git}/do/construct.do" // For reference only since raw data is PII
+  do "${git}/do/construct.do" // For reference only since raw data is PII
 
 // Part 2: Analysis
 
