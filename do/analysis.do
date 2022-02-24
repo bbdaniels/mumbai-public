@@ -1,3 +1,16 @@
+
+// Table 2 --------------------------------------------------------------------------
+use "${git}/constructed/sp-data.dta" , clear
+  keep if public == 1
+
+  sumstats ///
+    (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
+    (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
+    (g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
+    (time_waiting p time) ///
+  using "${git}/outputs/tab2.xlsx" ///
+  , stats(mean sd N) replace
+  
 // Figure 1 -------------------------------------------------------------------------------
 use "${git}/constructed/mcgm.dta" , clear
 
