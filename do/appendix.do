@@ -1,35 +1,8 @@
-  
-          
-// Time trends -------------------------------------------------------------------------------
-use "${git}/constructed/mcgm-ts.dta" , clear
-
-  gen C2 = C/10
-    lab var C2 "Average Monthly OPD (x10)"
-
-  betterbar C2 D I J Q ///
-  , over(month) legend(on region(lc(none)) c(1) pos(5) ring(0)) ///
-    n ci barl xoverhang format(%9.1f) ///
-    barcolor(eltblue emidblue edkblue)
-
-  graph export "${git}/outputs/f-timeseries.eps" , replace
-
-// Summary statistics --------------------------------------------------------------------------
-use "${git}/constructed/sp-data.dta" , clear
-  keep if public == 1
-
-  sumstats ///
-    (correct checklist microbio re_1 re_3 re_4 dr_1 dr_4) ///
-    (med_l_any_1 med_l_any_2 med_l_any_3 med_k_any_9) ///
-    (g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10) ///
-    (time_waiting p time) ///
-  using "${git}/outputs/t-summary.xlsx" ///
-  , stats(mean sd N) replace
-
-// Big regression table
+// S1 Table
 use "${git}/constructed/sp-data.dta" , clear
 
   fvset base 3 type
-  putexcel set "${git}/outputs/t-regression.xlsx" , replace
+  putexcel set "${git}/outputs/s1-table.xlsx" , replace
 
   local i = 1
   cap mat drop results
@@ -55,44 +28,7 @@ use "${git}/constructed/sp-data.dta" , clear
   putexcel B1 = matrix(results) , nformat(0.000) colnames
   putexcel save
 
-// Questions and exams
-use "${git}/constructed/sp-data.dta" , clear
-
-  putexcel set "${git}/outputs/t-checklist.xlsx" , replace
-
-  local i = 1
-  cap mat drop results
-  qui foreach var of varlist ///
-    ce_1 ce_2 ce_2a ce_3 ce_4 ce_5 ce_6 ce_7 ///
-    sp1_h_1 sp1_h_2 sp1_h_3 sp1_h_4 sp1_h_5 sp1_h_6 sp1_h_7 ///
-    sp1_h_8 sp1_h_9 sp1_h_10 sp1_h_11 sp1_h_12 sp1_h_13 sp1_h_14 ///
-    sp1_h_15 sp1_h_16 sp1_h_17 sp1_h_18 sp1_h_19 sp1_h_20 ///
-    sp4_h_1 sp4_h_2 sp4_h_3 sp4_h_4 sp4_h_5 sp4_h_6 sp4_h_7 sp4_h_8 ///
-    sp4_h_9 sp4_h_10 sp4_h_11 sp4_h_12 sp4_h_13 sp4_h_14 sp4_h_15 sp4_h_16 ///
-    sp4_h_17 sp4_h_18 sp4_h_19 sp4_h_20 sp4_h_21 sp4_h_22 sp4_h_23 sp4_h_24 ///
-    sp4_h_25 sp4_h_26 sp4_h_27 sp4_h_28 sp4_h_29 sp4_h_30 {
-
-        local label : var lab `var'
-
-        local ++i
-        putexcel A`i' = "`label'"
-          mean `var', over(type)
-          putexcel B`i' = matrix(e(b)) , nformat(0.000)
-
-    }
-
-  putexcel save
-
-
-    
-
-
-
-
-
-
-
-// Appendix materials: Private specialist provider comparison
+// S1-3 Figures
 use "${git}/constructed/sp-data.dta" , clear
 
   gen private = 1-public
@@ -117,7 +53,7 @@ use "${git}/constructed/sp-data.dta" , clear
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
-        xtit(" {&larr} Favors Public Dispensaries    Favors Private non-MD Providers {&rarr}"))
+        xtit(" {&larr} Public Dispensaries    Private non-MD Providers {&rarr}"))
 
       graph save "${git}/outputs/f-specialist-13-`case'.gph" , replace
 
@@ -130,7 +66,7 @@ use "${git}/constructed/sp-data.dta" , clear
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
-        xtit(" {&larr} Favors Public Hospitals    Favors Private non-MD Providers {&rarr}"))
+        xtit(" {&larr} Public Hospitals    Private non-MD Providers {&rarr}"))
 
       graph save "${git}/outputs/f-specialist-23-`case'.gph" , replace
 
@@ -143,7 +79,7 @@ use "${git}/constructed/sp-data.dta" , clear
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
-        xtit(" {&larr} Favors Public Dispensaries    Favors Private MBBS+MD Providers {&rarr}"))
+        xtit(" {&larr} Public Dispensaries    Private MBBS+MD Providers {&rarr}"))
 
       graph save "${git}/outputs/f-specialist-14-`case'.gph" , replace
 
@@ -156,7 +92,7 @@ use "${git}/constructed/sp-data.dta" , clear
     , cl(qutub_id) t(private) controls(i.sp_id) d b bh sort(global) ///
       graphopts(ysize(5) ylab(,labsize(vsmall)) scale(.7) title("Case `case'") ///
         xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
-        xtit(" {&larr} Favors Public Hospitals    Favors Private MBBS+MD Providers {&rarr}"))
+        xtit(" {&larr} Public Hospitals    Private MBBS+MD Providers {&rarr}"))
 
       graph save "${git}/outputs/f-specialist-24-`case'.gph" , replace
   }
@@ -166,7 +102,7 @@ use "${git}/constructed/sp-data.dta" , clear
     "${git}/outputs/f-specialist-2.gph" ///
   , ysize(5)
 
-    graph export "${git}/outputs/fa-specialist-12.eps" , replace
+    graph export "${git}/outputs/s1-fig.eps" , replace
 
   graph combine ///
     "${git}/outputs/f-specialist-13-1.gph" ///
@@ -175,7 +111,7 @@ use "${git}/constructed/sp-data.dta" , clear
     "${git}/outputs/f-specialist-23-2.gph" ///
   , ysize(5) altshrink
 
-    graph export "${git}/outputs/fa-specialist-n.eps" , replace
+    graph export "${git}/outputs/s2-fig.eps" , replace
 
   graph combine ///
     "${git}/outputs/f-specialist-14-1.gph" ///
@@ -183,43 +119,7 @@ use "${git}/constructed/sp-data.dta" , clear
     "${git}/outputs/f-specialist-24-1.gph" ///
     "${git}/outputs/f-specialist-24-2.gph" ///
   , ysize(5) altshrink
+      
+  graph export "${git}/outputs/s3-fig.eps" , replace
 
-    graph export "${git}/outputs/fa-specialist-y.eps" , replace
-
-// Waiting times and open hours
-
-  use "${git}/constructed/sp-data.dta" , clear
-    replace type = 4 if specialist == 1
-      lab def type 4 "MBBS+MD" , add
-
-  tw histogram time_in if public == 1 ///
-  , title("Appointment Time: Public Sector") xtit(" ") width(`=60*30*1000') start(`=60*60*1000*6') ///
-    xlab(`=60*60*1000*6' `=60*60*1000*12' `=60*60*1000*18' `=60*60*1000*23') ///
-    ${graph_opts} frac lc(black) fc(gs14) gap(10) xoverhang ///
-    ytit("Share of Interactions") ylab(0 "0%" .05 "5%" .1 "10%" .15 "15%" .2 "20%")
-
-    graph save "${git}/outputs/time-pub.gph" , replace
-
-  tw histogram time_in if public == 0 ///
-  , title("Appointment Time: Private Sector") xtit(" ") width(`=60*30*1000') start(`=60*60*1000*6') ///
-    xlab(`=60*60*1000*6' `=60*60*1000*12' `=60*60*1000*18' `=60*60*1000*23') ///
-    ${graph_opts} frac lc(black) fc(gs14) gap(10) xoverhang ///
-    ytit("Share of Interactions") ylab(0 "0%" .05 "5%" .1 "10%" .15 "15%" .2 "20%")
-
-    graph save "${git}/outputs/time-pri.gph" , replace
-
-  graph hbox time_waiting, over(type) noout ///
-    ytit(" ") title("Time Waiting (min)") note(" ") asy legend(on)
-    graph save "${git}/outputs/time-wait.gph" , replace
-  graph hbox time, over(type) noout ///
-    ytit(" ") title("Time With Provider (min)") note(" ") asy legend(on)
-    graph save "${git}/outputs/time-with.gph" , replace
-
-  graph combine ///
-    "${git}/outputs/time-pub.gph" ///
-    "${git}/outputs/time-wait.gph" ///
-    "${git}/outputs/time-pri.gph" ///
-    "${git}/outputs/time-with.gph" ///
-    , altshrink
-
-    graph export "${git}/outputs/time.eps" , replace
+// End
