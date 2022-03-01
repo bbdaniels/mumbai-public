@@ -19,6 +19,7 @@ use "${git}/constructed/mcgm.dta" , clear
     xtit("Monthly patients per dispensary {&rarr}") ///
     n ci barl xoverhang format(%9.1f) barcolor(red gs4)
 
+  graph export "${git}/outputs/fig1.tif" , replace
   graph export "${git}/outputs/fig1.eps" , replace
   
 // Figure 2 ----------------------------------------------------
@@ -40,6 +41,7 @@ use "${git}/constructed/sp-data.dta" , clear
   , c(1) pos(12) imargin(0 0 0 0)
     graph draw, xsize(5)
   
+    graph export "${git}/outputs/fig2.tif" , replace
     graph export "${git}/outputs/fig2.eps" , replace
     
 // Figure 3 ---------------------------------------------------
@@ -68,6 +70,7 @@ use "${git}/constructed/sp-data.dta" , clear
   grc1leg `graphs' , c(2) pos(12)
     graph draw, ysize(6)
 
+    graph export "${git}/outputs/fig3.tif" , replace
     graph export "${git}/outputs/fig3.eps" , replace
 
 // Figure 4 ----------------------------------------------------
@@ -89,6 +92,7 @@ use "${git}/constructed/sp-data.dta" , clear
   , r(1) pos(12) imargin(0 0 0 0)
     graph draw, ysize(5)
 
+    graph export "${git}/outputs/fig4.tif" , replace
     graph export "${git}/outputs/fig4.eps" , replace
 
 // Figure 5 -------------------------------------------------------------
@@ -102,6 +106,7 @@ betterbar g11 g1 g2 g3 g4 g5 g6 g7 g8 g9 g10  ///
     legend(on region(lc(none)) symxsize(small) symysize(small) ///
       pos(12) c(1) size(small)) ysize(6) ylab(,labsize(small))
 
+    graph export "${git}/outputs/fig5.tif" , replace
     graph export "${git}/outputs/fig5.eps" , replace
 
 // Figure 6 and 7 ---------------------------------------
@@ -121,6 +126,7 @@ forest reg ///
     xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
     xtit(" {&larr} Public Hospitals   Private Sector {&rarr}"))
 
+  graph export "${git}/outputs/fig6.tif" , replace
   graph export "${git}/outputs/fig6.eps" , replace
 
 forest reg ///
@@ -134,6 +140,7 @@ forest reg ///
     xlab(-2 "+2 SD" -1 "+1 SD" 0 "Zero" 1 "+1 SD" 2 "+2 SD") xscale(alt) xoverhang ///
     xtit(" {&larr} Public Dispensaries   Private Sector {&rarr}"))
 
+  graph export "${git}/outputs/fig7.tif" , replace
   graph export "${git}/outputs/fig7.eps" , replace
   
 // End of dofile
