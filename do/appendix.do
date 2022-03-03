@@ -103,6 +103,7 @@ use "${git}/constructed/sp-data.dta" , clear
   , ysize(5)
 
     graph export "${git}/outputs/s1_fig.tif" , replace
+    graph export "${git}/outputs/s1_fig.eps" , replace
 
   graph combine ///
     "${git}/outputs/f-specialist-13-1.gph" ///
@@ -112,6 +113,7 @@ use "${git}/constructed/sp-data.dta" , clear
   , ysize(5) altshrink
 
     graph export "${git}/outputs/s2_fig.tif" , replace
+    graph export "${git}/outputs/s2_fig.eps" , replace
 
   graph combine ///
     "${git}/outputs/f-specialist-14-1.gph" ///
@@ -121,5 +123,6 @@ use "${git}/constructed/sp-data.dta" , clear
   , ysize(5) altshrink
       
   graph export "${git}/outputs/s3_fig.tif" , replace
+  graph export "${git}/outputs/s3_fig.eps" , replace
 
 // End

@@ -117,7 +117,7 @@ use "${git}/data/mcgm.dta" , clear
 
   // Documentation for final data -- currently set to reset since will make lots of changes
   iecodebook export using "${git}/constructed/sp-data.xlsx" ///
-    , replace text copy trim("${git}/do/analysis.do")
+    , replace text copy trim("${git}/do/analysis.do" "${git}/do/appendix.do")
     use "${git}/constructed/sp-data.dta" , clear
 
 // End of dofile
