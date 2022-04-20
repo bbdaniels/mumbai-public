@@ -82,14 +82,14 @@ use "${git}/constructed/sp-data.dta" , clear
       dr_4 med_k_any_9 med_l_any_2 med_l_any_3 ///
     if case == `case' ///
     , over(type) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
-      legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small)) ///
+      legend(on region(lc(none)) region(lc(none)) c(1) ring(1) pos(12) size(small) symxsize(small) symysize(small)) ///
       ysize(6) xlab(${pct}) nodraw saving("${git}/outputs/f-quality-`case'.gph" , replace)
   }
 
-  grc1leg ///
+  graph combine ///
     "${git}/outputs/f-quality-1.gph" ///
     "${git}/outputs/f-quality-2.gph" ///
-  , r(1) pos(12) imargin(0 0 0 0)
+  , r(1) imargin(0 0 0 0)
     graph draw, ysize(5)
 
     graph export "${git}/outputs/fig4.tif" , replace
