@@ -29,7 +29,7 @@ use "${git}/constructed/sp-data.dta" , clear
     betterbarci ///
       re_5 re_4 re_3 re_1 microbio correct ///
     if case == `case' ///
-    , v over(public) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
+    , v over(public) barlab pct n xoverhang scale(0.7) title("Case `case'" , span pos(11)) ///
       barcolor(gs6 gs12) ///
       legend(on region(lc(none)) region(lc(none)) pos(1) c(1) ring(0) symxsize(small) symysize(small)) ///
       ysize(6) ylab(${pct}) nodraw saving("${git}/outputs/f-testing-`case'.gph" , replace) 
