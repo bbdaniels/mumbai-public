@@ -31,14 +31,14 @@ use "${git}/constructed/sp-data.dta" , clear
     if case == `case' ///
     , v over(public) barlab pct n xoverhang scale(0.7) title("Case `case'") ///
       barcolor(gs6 gs12) ///
-      legend(on region(lc(none)) region(lc(none)) r(1) ring(1) size(small) symxsize(small) symysize(small)) ///
+      legend(on region(lc(none)) region(lc(none)) pos(1) c(1) ring(0) symxsize(small) symysize(small)) ///
       ysize(6) ylab(${pct}) nodraw saving("${git}/outputs/f-testing-`case'.gph" , replace) 
   }
 
-  grc1leg ///
+  graph combine ///
     "${git}/outputs/f-testing-1.gph" ///
     "${git}/outputs/f-testing-2.gph" ///
-  , c(1) pos(12) imargin(0 0 0 0)
+  , c(1) imargin(0 0 0 0)
     graph draw, xsize(5)
   
     graph export "${git}/outputs/fig2.tif" , replace
