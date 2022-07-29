@@ -124,5 +124,16 @@ use "${git}/constructed/sp-data.dta" , clear
       
   graph export "${git}/outputs/s3_fig.tif" , replace
   graph export "${git}/outputs/s3_fig.eps" , replace
+  
+  // S4 Figure -------------------------------------------------------------------------------
+  use "${git}/constructed/mcgm.dta" , clear
+  
+    betterbar mcgm_* ///
+    , over(sampled) legend(on region(lc(none)) c(1) pos(4) ring(0) size(small) textfirst symxsize(small)) ///
+      xtit("Monthly patients per dispensary {&rarr}") ///
+      n ci barl xoverhang format(%9.1f) barcolor(red gs4)
+  
+    graph export "${git}/outputs/s4_fig.tif" , replace
+    graph export "${git}/outputs/s4_fig.eps" , replace
 
 // End
